@@ -17,13 +17,26 @@
         </div>
 
         <div class="lg:col-span-3">
-            <form wire:submit.prevent="saveChapter">
-                <input wire:model="title" type="text" placeholder="Judul Chapter..." class="w-full text-2xl font-bold border-0 border-b-4 border-black mb-4 focus:ring-0 px-0 bg-transparent">
-                
-                <div wire:ignore>
-                    <trix-editor input="x" class="trix-content min-h-[400px] bg-white text-lg"></trix-editor>
-                    <input id="x" type="hidden" wire:model.live="content">
+            <form wire:submit="saveChapter">
+                <div class="mb-4">
+                    <input wire:model="title" type="text" placeholder="Judul Chapter..." class="w-full text-2xl font-bold border-0 border-b-4 border-black focus:ring-0 px-0 bg-transparent">
+                    @error('title') <span class="text-red-600 font-bold bg-yellow-300 px-1">{{ $message }}</span> @enderror
                 </div>
+                
+                <div class="mb-4" 
+                     wire:ignore 
+                     x-data 
+                     x-on:trix-change="$dispatch('input', $event.target.value)">
+                    
+                    <input id="x" type="hidden" wire:model="content">
+                    
+                    <trix-editor input="x" class="trix-content min-h-[400px] bg-white text-lg border-2 border-black"></trix-editor>
+                </div>
+                @error('content') 
+                    <div class="mb-4 text-red-600 font-bold bg-yellow-300 px-1 inline-block border-2 border-red-600">
+                        Isi chapter tidak boleh kosong!
+                    </div> 
+                @enderror
 
                 <button type="submit" class="mt-4 bg-green-400 border-2 border-black px-8 py-3 font-bold shadow-brutal hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
                     SIMPAN CHAPTER
