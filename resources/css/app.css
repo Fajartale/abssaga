@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Trix Editor Styling Overrides for Brutalism */
+trix-toolbar .trix-button {
+    border: 2px solid black !important;
+    background: white;
+    margin: 2px;
+}
+trix-editor {
+    border: 3px solid black !important;
+    box-shadow: 4px 4px 0px 0px black;
+}
