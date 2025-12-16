@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Import Livewire Components
+// Pastikan namespace ini sesuai dengan lokasi file Livewire kamu
 use App\Livewire\Public\LandingPage;
 use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
@@ -26,12 +27,15 @@ use App\Livewire\Admin\ChapterEditor;
 // ====================================================
 
 // Halaman Depan (Landing Page)
+// Menampilkan daftar semua buku
 Route::get('/', LandingPage::class)->name('home');
 
 // Halaman Detail Buku
+// Menampilkan sinopsis dan daftar chapter
 Route::get('/book/{id}', BookDetail::class)->name('book.show');
 
 // Halaman Baca Chapter
+// Menampilkan isi cerita per bab
 Route::get('/read/{id}', ReadChapter::class)->name('chapter.read');
 
 
@@ -40,10 +44,12 @@ Route::get('/read/{id}', ReadChapter::class)->name('chapter.read');
 // ====================================================
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Dashboard Utama (List Buku & Form Tambah Buku)
+    // Dashboard Utama 
+    // Tempat upload buku baru & kelola buku yang ada
     Route::get('/dashboard', ManageBooks::class)->name('dashboard');
 
-    // Halaman Editor Menulis (Trix Editor)
+    // Halaman Editor Menulis
+    // Tempat menulis chapter baru untuk buku tertentu
     Route::get('/write/{bookId}', ChapterEditor::class)->name('admin.chapters');
 });
 
@@ -64,4 +70,5 @@ Route::middleware('auth')->group(function () {
 // ====================================================
 // 4. AUTH ROUTES (Login, Register, Logout)
 // ====================================================
+// Memuat route bawaan Breeze (login, register, forgot-password, dll)
 require __DIR__.'/auth.php';
