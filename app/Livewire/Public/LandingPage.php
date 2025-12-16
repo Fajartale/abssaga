@@ -9,13 +9,14 @@ class LandingPage extends Component
 {
     public function render()
     {
-        // Mengambil 2 buku secara acak sebagai simulasi "Favorit/Featured"
+        // 1. Ambil 2 buku acak untuk bagian "Pilihan Editor / Featured"
+        // 'with('user')' digunakan untuk memuat nama penulis sekaligus (eager loading)
         $featuredBooks = Book::with('user')
                         ->inRandomOrder()
                         ->limit(2)
                         ->get();
 
-        // Mengambil 8 buku terbaru
+        // 2. Ambil 8 buku yang paling baru dibuat
         $recentBooks = Book::with('user')
                         ->latest()
                         ->limit(8)
@@ -23,7 +24,7 @@ class LandingPage extends Component
 
         return view('livewire.public.landing-page', [
             'featuredBooks' => $featuredBooks,
-            'recentBooks' => $recentBooks
-        ])->layout('layouts.public');
+            'recentBooks'   => $recentBooks
+        ])->layout('layouts.public'); // Menggunakan layout public.blade.php
     }
 }
