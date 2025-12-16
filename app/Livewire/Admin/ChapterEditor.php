@@ -41,6 +41,7 @@ class ChapterEditor extends Component
     }
 
     public function render() {
-        return view('livewire.admin.chapter-editor');
+        return view('livewire.admin.chapter-editor')
+        ->layout('layouts.public'); 
     }
 }

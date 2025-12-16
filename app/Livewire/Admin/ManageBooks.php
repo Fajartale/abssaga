@@ -1,5 +1,5 @@
 <?php
-// app/Livewire/Admin/ManageBooks.php
+
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
@@ -44,6 +44,8 @@ class ManageBooks extends Component
     }
 
     public function render() {
-        return view('livewire.admin.manage-books');
+        // PERBAIKAN DI SINI: Tambahkan ->layout('layouts.app')
+        return view('livewire.admin.manage-books')
+            ->layout('layouts.public'); 
     }
 }
