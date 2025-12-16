@@ -23,15 +23,15 @@
                     @error('title') <span class="text-red-600 font-bold bg-yellow-300 px-1">{{ $message }}</span> @enderror
                 </div>
                 
-                <div class="mb-4" 
-                     wire:ignore 
-                     x-data 
-                     x-on:trix-change="$dispatch('input', $event.target.value)">
-                    
-                    <input id="x" type="hidden" wire:model="content">
-                    
-                    <trix-editor input="x" class="trix-content min-h-[400px] bg-white text-lg border-2 border-black"></trix-editor>
+                <div class="mb-4" wire:ignore>
+                    <trix-editor
+                        class="trix-content min-h-[400px] bg-white text-lg border-2 border-black"
+                        x-data
+                        x-on:trix-change="$wire.content = $event.target.value"
+                        x-on:trix-initialize="$event.target.value = $wire.content"
+                    ></trix-editor>
                 </div>
+                
                 @error('content') 
                     <div class="mb-4 text-red-600 font-bold bg-yellow-300 px-1 inline-block border-2 border-red-600">
                         Isi chapter tidak boleh kosong!
