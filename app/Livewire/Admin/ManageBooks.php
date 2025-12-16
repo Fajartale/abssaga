@@ -3,86 +3,69 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
-use Livewire\WithFileUploads; // WAJIB: Agar bisa upload gambar
+use Livewire\WithFileUploads;
 use App\Models\Book;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class ManageBooks extends Component
 {
-    use WithFileUploads; // WAJIB: Trait dipasang di sini
+    use WithFileUploads;
 
     public $title;
     public $synopsis;
     public $cover;
     public $books;
 
-    public function mount()
-    {
+    public function mount() {
         $this->loadBooks();
     }
 
-    public function loadBooks()
-    {
-        // Ambil buku milik user yang login
+    public function loadBooks() {
+        // Ambil buku user, urutkan dari terbaru
         $this->books = Book::where('user_id', Auth::id())->latest()->get();
     }
 
-    public function save()
-    {
-        // 1. Validasi
+    public function save() {
+        // 1. Validasi Input
         $this->validate([
-            'title' => 'required|min:3|max:255',
-            'synopsis' => 'required|min:10',
+            'title' => 'required|min:3',
+            'synopsis' => 'required',
             'cover' => 'nullable|image|max:2048', // Max 2MB
         ], [
-            'title.required' => 'Judul tidak boleh kosong.',
-            'cover.image' => 'File harus berupa gambar.',
+            // Custom pesan error
+            'title.required' => 'Judul buku wajib diisi.',
+            'synopsis.required' => 'Sinopsis wajib diisi.',
             'cover.max' => 'Ukuran gambar maksimal 2MB.',
+            'cover.image' => 'File harus berupa gambar.'
         ]);
 
-        // 2. Upload Gambar
+        // 2. Upload Gambar (Jika ada)
         $path = null;
         if ($this->cover) {
-            // Simpan ke folder 'public/covers'
             $path = $this->cover->store('covers', 'public');
         }
 
-        // 3. Simpan Database
+        // 3. Simpan ke Database
         Book::create([
             'user_id' => Auth::id(),
             'title' => $this->title,
-            // Tambah random string agar slug unik
+            // PENTING: Tambah random string agar slug unik dan tidak error database
             'slug' => Str::slug($this->title) . '-' . Str::random(5),
             'synopsis' => $this->synopsis,
             'cover_image' => $path
         ]);
 
-        // 4. Reset & Reload
+        // 4. Reset Form
         $this->reset(['title', 'synopsis', 'cover']);
+        
+        // 5. Reload Data & Kirim Notifikasi
         $this->loadBooks();
-        
-        session()->flash('message', 'Buku berhasil diterbitkan! Silakan tambah chapter.');
+        session()->flash('message', 'Buku berhasil diterbitkan!');
     }
 
-    public function deleteBook($id)
-    {
-        $book = Book::where('user_id', Auth::id())->find($id);
-        
-        if ($book) {
-            // Hapus gambar cover jika ada
-            if ($book->cover_image) {
-                Storage::disk('public')->delete($book->cover_image);
-            }
-            $book->delete();
-            $this->loadBooks();
-        }
-    }
-
-    public function render()
-    {
-        // Pastikan menggunakan layout admin (layouts.app)
+    public function render() {
+        // PENTING: Pastikan layout dipanggil agar style & script jalan
         return view('livewire.admin.manage-books')
             ->layout('layouts.app');
     }

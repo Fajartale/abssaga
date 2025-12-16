@@ -11,8 +11,17 @@ class Book extends Model
 {
     use HasFactory;
 
-    // Mengizinkan mass assignment (create/update) untuk semua kolom kecuali id
-    protected $guarded = ['id'];
+    /**
+     * Kolom yang boleh diisi secara massal (Mass Assignment).
+     * Pastikan nama kolom ini sesuai dengan migration database.
+     */
+    protected $fillable = [
+        'user_id',
+        'title',
+        'slug',
+        'synopsis',
+        'cover_image',
+    ];
 
     /**
      * Relasi: Sebuah Buku dimiliki oleh satu User (Penulis).
@@ -24,10 +33,25 @@ class Book extends Model
 
     /**
      * Relasi: Sebuah Buku memiliki banyak Chapter.
-     * Kita urutkan otomatis berdasarkan kolom 'order' agar rapi saat dipanggil.
+     * Kita tambahkan 'orderBy' agar saat dipanggil ($book->chapters),
+     * urutannya otomatis rapi dari bab 1, 2, dst.
      */
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class)->orderBy('order', 'asc');
+    }
+
+    /**
+     * (Opsional) Accessor untuk mendapatkan URL Cover dengan mudah.
+     * Cara pakai di Blade: <img src="{{ $book->cover_url }}">
+     */
+    public function getCoverUrlAttribute()
+    {
+        if ($this->cover_image) {
+            return asset('storage/' . $this->cover_image);
+        }
+
+        // Return null atau URL gambar placeholder default jika tidak ada cover
+        return null; 
     }
 }
