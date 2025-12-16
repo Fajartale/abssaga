@@ -29,9 +29,9 @@
                         x-data
                         x-on:trix-change="$wire.content = $event.target.value"
                         x-on:trix-initialize="$event.target.value = $wire.content"
+                        x-on:chapter-created.window="$el.value = ''" 
                     ></trix-editor>
                 </div>
-                
                 @error('content') 
                     <div class="mb-4 text-red-600 font-bold bg-yellow-300 px-1 inline-block border-2 border-red-600">
                         Isi chapter tidak boleh kosong!

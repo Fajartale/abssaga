@@ -1,6 +1,5 @@
 <?php
 
-// app/Livewire/Admin/ChapterEditor.php
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
@@ -25,19 +24,27 @@ class ChapterEditor extends Component
     }
 
     public function saveChapter() {
-        $this->validate(['title' => 'required', 'content' => 'required']);
+        $this->validate([
+            'title' => 'required',
+            'content' => 'required'
+        ]);
 
         Chapter::create([
             'book_id' => $this->book->id,
             'title' => $this->title,
             'slug' => Str::slug($this->title),
-            'content' => $this->content, // Trix menyimpan HTML
+            'content' => $this->content, 
             'order' => $this->book->chapters()->count() + 1
         ]);
 
+        // Reset variable form
         $this->reset(['title', 'content']);
+        
+        // Reload daftar chapter
         $this->loadChapters();
-        // Dispatch event agar Trix editor kosong kembali (perlu JS tambahan)
+        
+        // KIRIM EVENT KE BROWSER UNTUK MEMBERSIHKAN TRIX EDITOR
+        $this->dispatch('chapter-created'); 
     }
 
     public function render() {
