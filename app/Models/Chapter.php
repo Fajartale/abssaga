@@ -10,10 +10,20 @@ class Chapter extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    /**
+     * Kolom yang boleh diisi.
+     * Sesuai dengan migration chapters table.
+     */
+    protected $fillable = [
+        'book_id',
+        'title',
+        'slug',
+        'content',
+        'order',
+    ];
 
     /**
-     * Relasi: Sebuah Chapter adalah milik satu Buku.
+     * Relasi: Chapter adalah milik satu Buku.
      */
     public function book(): BelongsTo
     {
