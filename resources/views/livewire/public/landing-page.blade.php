@@ -5,21 +5,36 @@
         }
     </style>
 
-    <div class="bg-[#410854] border-b-4 border-black p-8">
+    <div class="bg-[#1c0213] border-b-4 border-black p-8">
         <div class="max-w-7xl mx-auto">
-            <h1 class="text-6xl font-black mb-4 uppercase tracking-tighter text-white">
+            <h1 class="text-6xl font-black mb-6 uppercase tracking-tighter text-white">
                 ABC<span class="text-yellow-400 text-stroke-black">SAGA</span>
             </h1>
-            <div class="flex gap-0">
-                <input 
-                    wire:model.live.debounce.300ms="search" 
-                    type="text" 
-                    placeholder="CARI BUKU DISINI..." 
-                    class="w-full bg-white border-4 border-black text-2xl p-4 font-bold placeholder-gray-400 focus:ring-0 focus:border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-                >
-                <button class="bg-black text-white font-bold px-8 border-4 border-black hover:bg-white hover:text-black transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform hover:-translate-y-1">
-                    CARI
-                </button>
+
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 mt-4">
+                
+                <div class="flex gap-4">
+                    <a href="#" class="flex items-center justify-center bg-white text-black font-black text-lg px-6 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                        SERIES
+                    </a>
+                    
+                    <a href="#" class="flex items-center justify-center bg-yellow-400 text-black font-black text-lg px-6 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                        RANKING 🏆
+                    </a>
+                </div>
+
+                <div class="flex gap-0 w-full lg:w-auto">
+                    <input 
+                        wire:model.live.debounce.300ms="search" 
+                        type="text" 
+                        placeholder="CARI BUKU..." 
+                        class="w-full lg:w-64 bg-white border-4 border-black text-sm font-bold p-2 placeholder-gray-500 focus:ring-0 focus:border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)]"
+                    >
+                    <button class="bg-black text-white text-sm font-bold px-4 border-4 border-black border-l-0 hover:bg-gray-800 transition-all">
+                        CARI
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -73,7 +88,6 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @forelse($books as $book)
                         <div class="group border-4 border-black bg-white hover:bg-yellow-50 transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1">
-                            
                             <div class="h-40 bg-gray-200 border-b-4 border-black flex items-center justify-center relative overflow-hidden">
                                 @if($book->cover_image)
                                     <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
@@ -81,7 +95,6 @@
                                     <span class="text-6xl text-gray-300 font-black rotate-12 select-none group-hover:text-yellow-400 transition-colors">BOOK</span>
                                 @endif
                             </div>
-
                             <div class="p-4">
                                 <h4 class="text-xl font-bold truncate uppercase mb-2 group-hover:underline decoration-wavy">{{ $book->title }}</h4>
                                 <p class="text-sm text-gray-600 line-clamp-2 mb-4 h-10">{{ $book->description }}</p>
