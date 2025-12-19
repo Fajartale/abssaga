@@ -1,117 +1,151 @@
-<div class="min-h-screen bg-white font-sans text-black">
-    
-    {{-- HERO SECTION --}}
-    <div class="bg-yellow-300 border-b-4 border-black p-8 md:p-20 relative overflow-hidden">
-        {{-- Background Decoration Text --}}
-        <div class="absolute top-0 right-0 -mt-10 -mr-10 text-9xl text-yellow-400 font-black opacity-50 rotate-12 select-none z-0">
-            ABCSAGA
-        </div>
+<div class="min-h-screen bg-white font-mono">
+    <style>
+        .text-stroke-black {
+            -webkit-text-stroke: 2px black;
+        }
+    </style>
 
-        <div class="relative z-10 max-w-4xl">
-            <h1 class="text-6xl md:text-8xl font-black leading-none mb-6 tracking-tighter drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-                TULIS.<br>BACA.<br>ULANGI.
+    <div class="bg-[#410854] border-b-4 border-black p-8">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-6xl font-black mb-4 uppercase tracking-tighter text-white">
+                ABC<span class="text-yellow-400 text-stroke-black">SAGA</span>
             </h1>
-            <p class="text-xl md:text-2xl font-bold font-mono border-l-4 border-black pl-4 mb-8 bg-white/50 inline-block p-2">
-                Platform novel digital tanpa basa-basi.
-            </p>
-            <div class="flex flex-col md:flex-row gap-4">
-                <a href="#browse" class="bg-black text-white px-8 py-4 text-xl font-bold border-2 border-transparent hover:bg-white hover:text-black hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-center">
-                    MULAI MEMBACA
-                </a>
-                
-                @guest
-                    <a href="{{ route('login') }}" class="bg-white text-black px-8 py-4 text-xl font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all text-center">
-                        JADI PENULIS
-                    </a>
-                @else
-                    <a href="{{ route('dashboard') }}" class="bg-white text-black px-8 py-4 text-xl font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all text-center">
-                        DASHBOARD PENULIS
-                    </a>
-                @endguest
+            <div class="flex gap-0">
+                <input 
+                    wire:model.live.debounce.300ms="search" 
+                    type="text" 
+                    placeholder="CARI BUKU DISINI..." 
+                    class="w-full bg-white border-4 border-black text-2xl p-4 font-bold placeholder-gray-400 focus:ring-0 focus:border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                >
+                <button class="bg-black text-white font-bold px-8 border-4 border-black hover:bg-white hover:text-black transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform hover:-translate-y-1">
+                    CARI
+                </button>
             </div>
         </div>
     </div>
 
-    {{-- FEATURED SECTION (PILIHAN EDITOR) --}}
-    <div class="border-b-4 border-black bg-purple-100 p-8 md:p-12">
-        <div class="flex items-center gap-4 mb-8">
-            <div class="w-8 h-8 bg-black"></div>
-            <h2 class="text-3xl font-black uppercase tracking-widest">PILIHAN EDITOR (Favorit)</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            @forelse($featuredBooks as $book)
-            <a href="{{ route('book.show', $book->id) }}" class="group relative block bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all duration-200">
-                <div class="flex flex-col md:flex-row h-full">
-                    {{-- Cover Image --}}
-                    <div class="w-full md:w-1/3 border-b-4 md:border-b-0 md:border-r-4 border-black bg-gray-200 aspect-[2/3] md:aspect-auto overflow-hidden">
-                        @if($book->cover_image)
-                            <img src="{{ asset('storage/'.$book->cover_image) }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
-                        @else
-                            <div class="flex items-center justify-center h-full text-4xl font-black text-gray-400">?</div>
-                        @endif
-                    </div>
-                    
-                    {{-- Book Details --}}
-                    <div class="p-6 flex flex-col justify-between w-full md:w-2/3">
-                        <div>
-                            <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 border border-black mb-2 inline-block shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">HOT PICK</span>
-                            <h3 class="text-2xl md:text-3xl font-black uppercase leading-tight mb-2 group-hover:underline decoration-4 decoration-purple-500">{{ $book->title }}</h3>
-                            <p class="font-mono text-sm text-gray-600 mb-4 font-bold">Penulis: {{ $book->user->name }}</p>
-                            <p class="text-sm line-clamp-3 font-medium border-l-2 border-black pl-3 italic">
-                                "{{ $book->synopsis }}"
+    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <div class="lg:col-span-3 space-y-8">
+            
+            @if($featuredBooks->count() > 0)
+            <div x-data="{ activeSlide: 0, slides: {{ $featuredBooks->count() }} }" class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative">
+                <div class="absolute top-0 left-0 bg-black text-white px-4 py-1 font-bold z-10">
+                    FEATURED 🔥
+                </div>
+                
+                <div class="relative h-[300px] overflow-hidden bg-gray-100 border-2 border-black">
+                    @foreach($featuredBooks as $index => $book)
+                        <div x-show="activeSlide === {{ $index }}" 
+                             class="absolute inset-0 p-8 flex flex-col justify-center items-start transition-opacity duration-500 bg-cover bg-center"
+                             style="background-image: linear-gradient(to right, white 30%, rgba(255,255,255,0.8) 50%, transparent), url('{{ $book->cover_image ? Storage::url($book->cover_image) : '' }}');">
+                            
+                            <h2 class="text-4xl font-black bg-white inline-block px-2 border-2 border-black mb-2 truncate max-w-full z-10">
+                                {{ $book->title }}
+                            </h2>
+                            <p class="text-lg bg-yellow-300 inline-block px-2 border-2 border-black mb-4 line-clamp-2 max-w-[80%] z-10">
+                                {{ $book->description }}
                             </p>
+                            <a href="{{ route('book.detail', $book->id) }}" class="bg-cyan-400 text-black border-2 border-black px-6 py-2 font-bold hover:bg-cyan-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10">
+                                BACA SEKARANG
+                            </a>
                         </div>
-                        <div class="mt-4 text-right font-bold text-lg group-hover:mr-2 transition-all">BACA SEKARANG &rarr;</div>
-                    </div>
+                    @endforeach
                 </div>
-            </a>
-            @empty
-                <div class="col-span-full text-center py-10 font-mono font-bold text-gray-500">
-                    Belum ada buku unggulan.
-                </div>
-            @endforelse
-        </div>
-    </div>
 
-    {{-- RECENT BOOKS SECTION (TERBARU) --}}
-    <div id="browse" class="p-8 md:p-12 bg-white">
-        <div class="flex justify-between items-end mb-8 border-b-4 border-black pb-4">
-            <h2 class="text-3xl font-black uppercase">TERBARU DIRILIS</h2>
-            <span class="font-mono text-xs md:text-sm font-bold bg-black text-white px-2 py-1 rotate-3 inline-block">UPDATE SETIAP HARI</span>
+                <div class="flex justify-between mt-2">
+                    <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="border-2 border-black px-4 py-1 font-bold hover:bg-gray-200">PREV</button>
+                    <div class="font-bold flex items-center gap-1">
+                        <template x-for="i in slides">
+                            <div :class="activeSlide === i-1 ? 'bg-black' : 'bg-gray-300'" class="w-3 h-3 border border-black"></div>
+                        </template>
+                    </div>
+                    <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="border-2 border-black px-4 py-1 font-bold hover:bg-gray-200">NEXT</button>
+                </div>
+            </div>
+            @endif
+
+            <div>
+                <h3 class="text-3xl font-black border-b-4 border-black mb-6 inline-block bg-white pr-4">
+                    DAFTAR PUSTAKA
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @forelse($books as $book)
+                        <div class="group border-4 border-black bg-white hover:bg-yellow-50 transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1">
+                            
+                            <div class="h-40 bg-gray-200 border-b-4 border-black flex items-center justify-center relative overflow-hidden">
+                                @if($book->cover_image)
+                                    <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-6xl text-gray-300 font-black rotate-12 select-none group-hover:text-yellow-400 transition-colors">BOOK</span>
+                                @endif
+                            </div>
+
+                            <div class="p-4">
+                                <h4 class="text-xl font-bold truncate uppercase mb-2 group-hover:underline decoration-wavy">{{ $book->title }}</h4>
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-4 h-10">{{ $book->description }}</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold bg-gray-200 border border-black px-2 py-1">
+                                        {{ $book->chapters->count() }} Chapter
+                                    </span>
+                                    <a href="{{ route('book.detail', $book->id) }}" class="text-sm font-bold underline decoration-2 hover:bg-black hover:text-white px-1">
+                                        LIHAT ->
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-2 border-2 border-dashed border-black p-8 text-center font-bold text-gray-500">
+                            TIDAK ADA BUKU DITEMUKAN.
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="mt-8">
+                    {{ $books->links() }}
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @forelse($recentBooks as $book)
-            <a href="{{ route('book.show', $book->id) }}" class="group flex flex-col bg-white border-4 border-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+        <div class="lg:col-span-1">
+            <div class="sticky top-6 border-4 border-black bg-white p-4 shadow-[8px_8px_0px_0px_#ff0000]">
+                <h3 class="text-2xl font-black bg-red-500 text-white border-2 border-black p-2 text-center mb-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    TOP RANKING
+                </h3>
                 
-                {{-- Cover Image --}}
-                <div class="h-64 overflow-hidden border-b-4 border-black bg-gray-100 relative">
-                     @if($book->cover_image)
-                        <img src="{{ asset('storage/'.$book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 grayscale group-hover:grayscale-0">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-xl font-bold text-gray-400">NO COVER</div>
-                    @endif
-                    
-                    {{-- Tanggal Rilis Badge --}}
-                    <div class="absolute top-0 right-0 bg-white border-l-2 border-b-2 border-black p-1 text-xs font-mono font-bold">
-                        {{ $book->created_at->format('d M') }}
+                <ul class="space-y-4">
+                    @foreach($rankedBooks as $index => $rank)
+                        <li class="flex items-start gap-3 group cursor-pointer">
+                            <div class="text-3xl font-black text-stroke-black text-transparent group-hover:text-red-500 transition-colors">
+                                #{{ $index + 1 }}
+                            </div>
+                            <div class="border-b-2 border-black w-full pb-2">
+                                <a href="{{ route('book.detail', $rank->id) }}" class="font-bold block text-lg leading-tight group-hover:underline">
+                                    {{ $rank->title }}
+                                </a>
+                                <span class="text-xs bg-black text-white px-1 mt-1 inline-block">
+                                    {{ $rank->chapters->count() }} Chapters
+                                </span>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+
+                <div class="mt-8 pt-6 border-t-4 border-black">
+                    <h4 class="font-bold mb-3 uppercase">Kategori Populer</h4>
+                    <div class="flex flex-wrap gap-2">
+                        @php $tags = ['Action', 'Romance', 'Fantasy', 'Horror', 'Comedy', 'Slice of Life']; @endphp
+                        @foreach($tags as $tag)
+                            <button class="border-2 border-black px-2 py-1 text-sm font-bold hover:bg-yellow-300 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                                {{ $tag }}
+                            </button>
+                        @endforeach
                     </div>
                 </div>
-                
-                {{-- Judul & Penulis --}}
-                <div class="p-4 flex-1 flex flex-col justify-between bg-white group-hover:bg-yellow-50 transition-colors">
-                    <div>
-                        <h3 class="font-black text-lg uppercase leading-tight mb-1 line-clamp-2">{{ $book->title }}</h3>
-                        <p class="text-xs font-mono font-bold text-gray-500">Oleh: {{ $book->user->name }}</p>
-                    </div>
-                </div>
-            </a>
-            @empty
-                <div class="col-span-full text-center py-20 border-4 border-dashed border-gray-300">
-                    <p class="text-xl font-bold text-gray-400">Belum ada buku yang diterbitkan.</p>
-                </div>
-            @endforelse
+            </div>
         </div>
+
     </div>
 </div>
