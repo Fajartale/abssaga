@@ -1,194 +1,191 @@
-<div class="min-h-screen bg-white font-mono text-black">
-    <style>
-        .text-stroke-black { -webkit-text-stroke: 2px black; }
-        .text-stroke-sm { -webkit-text-stroke: 1px black; }
-        /* Hilangkan scrollbar default agar lebih rapi */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
-        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
-        ::-webkit-scrollbar-thumb:hover { background: #333; }
-    </style>
+<div class="min-h-screen bg-white font-sans text-black">
+    
+    {{-- HERO SECTION (KUNING) --}}
+    <div class="bg-yellow-300 border-b-4 border-black p-8 md:p-20 relative overflow-hidden">
+        {{-- Background Decoration --}}
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 text-9xl text-yellow-400 font-black opacity-50 rotate-12 select-none z-0">
+            ABCSAGA
+        </div>
 
-    <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
-                
-                <div class="flex flex-col lg:flex-row items-center gap-8 w-full lg:w-auto">
-                    <a href="{{ route('home') }}" class="group flex items-center gap-3 select-none hover:scale-105 transition-transform">
-                        <div class="w-12 h-10 bg-white border-2 border-black relative shadow-[4px_4px_0px_0px_#facc15]">
-                            <div class="absolute inset-0 border-r-2 border-black w-1/2 bg-gray-100"></div>
-                            <div class="absolute top-2 left-1 w-8 h-1 bg-black"></div>
-                            <div class="absolute top-4 left-1 w-8 h-1 bg-black"></div>
-                        </div>
-                        <div class="leading-none">
-                            <h1 class="text-4xl font-black text-white tracking-tighter">
-                                ABC<span class="text-yellow-400 text-stroke-sm">SAGA</span>
-                            </h1>
-                        </div>
+        <div class="relative z-10 max-w-4xl">
+            <h1 class="text-6xl md:text-8xl font-black leading-none mb-6 tracking-tighter drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                TULIS.<br>BACA.<br>ULANGI.
+            </h1>
+            <div class="flex flex-col md:flex-row gap-4 mt-8">
+                <a href="#browse" class="bg-black text-white px-8 py-4 text-xl font-bold border-2 border-transparent hover:bg-white hover:text-black hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-center">
+                    MULAI MEMBACA
+                </a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="bg-white text-black px-8 py-4 text-xl font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all text-center">
+                        DASHBOARD
                     </a>
-
-                    <nav class="flex gap-4">
-                        <a href="#" class="px-6 py-2 bg-white text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
-                            Series
-                        </a>
-                        <a href="#" class="px-6 py-2 bg-yellow-400 text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
-                            Ranking 🏆
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="w-full lg:w-auto">
-                    <div class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
-                        <input type="text" placeholder="CARI BUKU..." class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0">
-                        <button class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors">
-                            🔍
-                        </button>
-                    </div>
-                </div>
+                @endauth
             </div>
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8 mt-8">
-        
-        <div class="lg:col-span-3 space-y-10">
-            
-            <div class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_#1c0213] relative group">
-                <div class="absolute -top-4 -left-2 bg-yellow-400 text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
-                    EDITOR'S CHOICE 🔥
-                </div>
-                
-                <div class="relative h-[400px] bg-black border-2 border-black overflow-hidden">
-                    @if($featuredBooks->count() > 0)
-                        <div x-data="{ activeSlide: 0, slides: {{ $featuredBooks->count() }} }" class="h-full w-full relative">
+    {{-- SLIDER SECTION (PILIHAN EDITOR - UNGU) --}}
+    <div class="border-b-4 border-black bg-purple-100 p-8 md:p-12">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-8 h-8 bg-black"></div>
+            <h2 class="text-3xl font-black uppercase tracking-widest">PILIHAN EDITOR (HOT 🔥)</h2>
+        </div>
+
+        {{-- AREA SLIDER --}}
+        <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative h-[500px] md:h-[400px]">
+            @if($featuredBooks->count() > 0)
+                <div x-data="{ activeSlide: 0, slides: {{ $featuredBooks->count() }} }" class="h-full w-full relative overflow-hidden">
+                    
+                    @foreach($featuredBooks as $index => $book)
+                        <div x-show="activeSlide === {{ $index }}"
+                             x-transition:enter="transition ease-out duration-500"
+                             x-transition:enter-start="opacity-0 translate-x-full"
+                             x-transition:enter-end="opacity-100 translate-x-0"
+                             x-transition:leave="transition ease-in duration-300"
+                             x-transition:leave-start="opacity-100 translate-x-0"
+                             x-transition:leave-end="opacity-0 -translate-x-full"
+                             class="absolute inset-0 flex flex-col md:flex-row h-full w-full bg-white">
                             
-                            @foreach($featuredBooks as $index => $book)
-                                <div x-show="activeSlide === {{ $index }}"
-                                     x-transition:enter="transition ease-out duration-500"
-                                     x-transition:enter-start="opacity-0 scale-95"
-                                     x-transition:enter-end="opacity-100 scale-100"
-                                     class="absolute inset-0 bg-cover bg-center flex flex-col justify-end p-8"
-                                     style="background-image: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent 70%), url('{{ $book->cover_url ?? 'https://via.placeholder.com/800x400?text=No+Cover' }}');">
-                                    
-                                    <h2 class="text-4xl lg:text-5xl font-black text-white mb-2 leading-none drop-shadow-[2px_2px_0px_#000]">
-                                        {{ $book->title }}
-                                    </h2>
-                                    <p class="text-yellow-400 font-bold mb-4 uppercase tracking-widest text-xs">
-                                        Ditulis oleh: {{ $book->user->name ?? 'Anonim' }}
-                                    </p>
-                                    <p class="text-gray-300 text-sm line-clamp-2 max-w-2xl mb-6 border-l-4 border-yellow-400 pl-4">
-                                        {{ $book->synopsis }}
-                                    </p>
-                                    
-                                    <a href="#" class="w-fit bg-white text-black border-2 border-black px-8 py-3 font-bold hover:bg-yellow-400 hover:shadow-[4px_4px_0px_0px_#000] transition-all uppercase tracking-widest text-xs">
-                                        BACA SEKARANG
-                                    </a>
-                                </div>
-                            @endforeach
-
-                            @if($featuredBooks->count() > 1)
-                                <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">◀</button>
-                                <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">▶</button>
-                            @endif
-
-                        </div>
-                    @else
-                        <div class="h-full w-full flex flex-col items-center justify-center text-white">
-                            <span class="text-6xl mb-4">📚</span>
-                            <h3 class="text-2xl font-bold uppercase">BELUM ADA BUKU FEATURED</h3>
-                            <p class="text-gray-400 text-sm">Tambahkan buku di database.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <div>
-                <div class="flex items-center gap-4 mb-6 border-b-4 border-black pb-2">
-                    <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
-                        NEW RELEASES
-                    </h3>
-                    <div class="h-1 bg-yellow-400 flex-grow"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @forelse($recentBooks as $book)
-                        <div class="group border-4 border-black bg-white hover:bg-yellow-50 transition-all hover:shadow-[8px_8px_0px_0px_#1c0213] hover:-translate-y-1 flex flex-col h-full">
-                            <div class="h-48 bg-gray-200 border-b-4 border-black relative overflow-hidden">
-                                @if($book->cover_url)
-                                    <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            {{-- Gambar Cover --}}
+                            <div class="w-full md:w-1/3 h-1/2 md:h-full border-b-4 md:border-b-0 md:border-r-4 border-black bg-gray-200 relative overflow-hidden">
+                                @if($book->cover_image)
+                                    <img src="{{ asset('storage/'.$book->cover_image) }}" class="w-full h-full object-cover">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                                        <span class="text-4xl font-black text-gray-400 rotate-12">NO COVER</span>
-                                    </div>
+                                    <div class="flex items-center justify-center h-full text-4xl font-black text-gray-400">NO COVER</div>
                                 @endif
-                                <div class="absolute top-2 right-2 bg-black text-white text-xs font-bold px-2 py-1 border border-white">
-                                    NEW
+                                <div class="absolute top-4 left-4 bg-yellow-400 border-2 border-black px-3 py-1 font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                    FEATURED #{{ $index + 1 }}
                                 </div>
                             </div>
-                            
-                            <div class="p-5 flex flex-col flex-grow">
-                                <h4 class="text-xl font-black uppercase mb-1 leading-tight group-hover:text-[#1c0213]">
-                                    {{Str::limit($book->title, 40)}}
-                                </h4>
-                                <p class="text-xs font-bold text-yellow-600 mb-3">
-                                    {{ $book->user->name ?? 'Unknown Author' }}
+
+                            {{-- Info Buku --}}
+                            <div class="w-full md:w-2/3 p-6 md:p-10 flex flex-col justify-center bg-white">
+                                <h3 class="text-3xl md:text-5xl font-black uppercase leading-none mb-4 line-clamp-2">
+                                    {{ $book->title }}
+                                </h3>
+                                <p class="font-mono font-bold text-purple-600 mb-4 text-lg">
+                                    Ditulis oleh: {{ $book->user->name }}
                                 </p>
-                                <p class="text-xs text-gray-600 line-clamp-3 mb-4 font-medium flex-grow">
-                                    {{ $book->synopsis }}
+                                <p class="text-gray-600 font-medium text-sm md:text-base line-clamp-3 mb-6 border-l-4 border-yellow-400 pl-4 italic">
+                                    "{{ $book->synopsis }}"
                                 </p>
-                                <a href="#" class="w-full block text-center bg-transparent border-2 border-black py-2 font-bold text-sm hover:bg-black hover:text-white transition-colors uppercase">
-                                    Detail Buku ->
+                                <a href="{{ route('book.detail', $book->id) }}" class="w-fit bg-black text-white px-8 py-3 font-bold text-lg hover:bg-yellow-400 hover:text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all border-2 border-transparent hover:border-black">
+                                    BACA SEKARANG &rarr;
                                 </a>
                             </div>
                         </div>
-                    @empty
-                        <div class="col-span-2 border-4 border-dashed border-black p-12 text-center bg-gray-50">
-                            <h3 class="text-xl font-bold text-gray-500">BELUM ADA BUKU TERBARU.</h3>
-                        </div>
-                    @endforelse
+                    @endforeach
+
+                    {{-- Tombol Navigasi Slider --}}
+                    @if($featuredBooks->count() > 1)
+                        <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute bottom-4 left-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-4 bg-white border-2 border-black p-3 hover:bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-20">
+                            ◀ PREV
+                        </button>
+                        <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute bottom-4 right-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-4 bg-white border-2 border-black p-3 hover:bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-20">
+                            NEXT ▶
+                        </button>
+                    @endif
+
                 </div>
+            @else
+                <div class="flex items-center justify-center h-full">
+                    <p class="text-2xl font-black text-gray-400 uppercase">Belum ada buku featured.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- MAIN CONTENT (SPLIT LAYOUT) --}}
+    <div id="browse" class="max-w-7xl mx-auto p-6 md:p-12 grid grid-cols-1 lg:grid-cols-4 gap-12">
+        
+        {{-- KOLOM KIRI: BUKU TERBARU --}}
+        <div class="lg:col-span-3">
+            <div class="flex justify-between items-end mb-8 border-b-4 border-black pb-4">
+                <h2 class="text-3xl font-black uppercase">TERBARU DIRILIS</h2>
+                <span class="hidden md:inline-block font-mono text-sm font-bold bg-black text-white px-2 py-1 rotate-3">FRESH UPDATE</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                @forelse($recentBooks as $book)
+                <a href="{{ route('book.detail', $book->id) }}" class="group flex flex-col bg-white border-4 border-black hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-200">
+                    {{-- Cover Image --}}
+                    <div class="h-48 overflow-hidden border-b-4 border-black bg-gray-100 relative">
+                         @if($book->cover_image)
+                            <img src="{{ asset('storage/'.$book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 grayscale group-hover:grayscale-0">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-xl font-bold text-gray-400">NO COVER</div>
+                        @endif
+                        <div class="absolute top-0 right-0 bg-yellow-300 border-l-2 border-b-2 border-black p-1 text-xs font-black">
+                            BARU
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 flex-1 flex flex-col justify-between bg-white group-hover:bg-yellow-50">
+                        <div>
+                            <h3 class="font-black text-xl uppercase leading-tight mb-2 line-clamp-2">{{ $book->title }}</h3>
+                            <p class="text-xs font-mono font-bold text-gray-500">Oleh: {{ $book->user->name }}</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t-2 border-gray-200 group-hover:border-black text-right text-sm font-bold">
+                            LIHAT DETAIL ->
+                        </div>
+                    </div>
+                </a>
+                @empty
+                    <div class="col-span-full text-center py-20 border-4 border-dashed border-gray-300">
+                        <p class="text-xl font-bold text-gray-400">Belum ada buku.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="mt-8">
+                {{ $recentBooks->links() }}
             </div>
         </div>
 
+        {{-- KOLOM KANAN: TOP RANKING --}}
         <div class="lg:col-span-1">
-            <div class="sticky top-24 space-y-8">
-                
+            <div class="sticky top-10">
                 <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#facc15]">
-                    <div class="bg-black text-white p-3 border-b-4 border-black">
-                        <h3 class="text-xl font-black text-center uppercase tracking-wider">👑 Top Ranking</h3>
+                    <div class="bg-black text-white p-4 border-b-4 border-black">
+                        <h3 class="text-xl font-black text-center uppercase tracking-wider">👑 TOP RANKING</h3>
                     </div>
-                    <ul class="divide-y-2 divide-black">
-                        @foreach(range(1, 5) as $i)
-                            <li class="p-4 hover:bg-yellow-50 transition-colors cursor-pointer group flex gap-3 items-center">
-                                <div class="w-8 h-8 flex items-center justify-center font-black text-lg border-2 border-black bg-white group-hover:bg-black group-hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000]">
-                                    {{ $i }}
+                    
+                    <ul class="divide-y-4 divide-black">
+                        @forelse($rankedBooks as $index => $rank)
+                            <li class="p-4 hover:bg-yellow-100 transition-colors cursor-pointer group flex gap-3 items-start">
+                                <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center font-black text-2xl border-2 border-black bg-white text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                    {{ $index + 1 }}
                                 </div>
                                 <div class="flex-grow min-w-0">
-                                    <span class="font-bold text-sm uppercase truncate block group-hover:underline">
-                                        Judul Populer #{{ $i }}
-                                    </span>
-                                    <span class="text-[10px] bg-cyan-300 border border-black px-1 font-bold">
-                                        {{ rand(10, 100) }}k Views
-                                    </span>
+                                    <a href="{{ route('book.detail', $rank->id) }}" class="font-bold text-sm uppercase leading-tight block hover:underline mb-1">
+                                        {{ $rank->title }}
+                                    </a>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="text-[10px] bg-cyan-300 border border-black px-1 font-bold">
+                                            {{ $rank->chapters_count }} Chapters
+                                        </span>
+                                    </div>
                                 </div>
                             </li>
-                        @endforeach
+                        @empty
+                            <li class="p-4 text-center text-gray-500 font-bold italic">
+                                Belum ada data ranking.
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
 
-                <div class="border-4 border-black bg-white p-4">
-                    <h4 class="font-black text-sm uppercase mb-4 border-b-2 border-black pb-2 inline-block">
-                        Popular Tags
-                    </h4>
+                {{-- TAGS (Tambahan Kosmetik) --}}
+                <div class="mt-8 border-4 border-black bg-white p-4">
+                    <h4 class="font-black text-sm uppercase mb-4 border-b-2 border-black pb-2 inline-block">POPULAR TAGS</h4>
                     <div class="flex flex-wrap gap-2">
-                        @foreach(['Action', 'Romance', 'Fantasy', 'Horror', 'System'] as $tag)
-                            <button class="text-xs font-bold border-2 border-black px-3 py-1 hover:bg-cyan-400 hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                        @foreach(['Action', 'Romance', 'Fantasy', 'Horror', 'Comedy'] as $tag)
+                            <button class="text-xs font-bold border-2 border-black px-3 py-1 hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
                                 #{{ $tag }}
                             </button>
                         @endforeach
                     </div>
                 </div>
-
             </div>
         </div>
 

@@ -4,52 +4,38 @@ namespace App\Livewire\Public;
 
 use Livewire\Component;
 use App\Models\Book;
-use Livewire\WithPagination;
+use Livewire\WithPagination; // Tambahkan ini untuk pagination halaman baru
 
 class LandingPage extends Component
 {
-    use WithPagination;
-
-    // Properti untuk pencarian (wire:model="search")
-    public $search = '';
-
-    // Reset halaman pagination saat search berubah
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
+    use WithPagination; // Aktifkan pagination
 
     public function render()
     {
-        // 1. FEATURED BOOKS (Slider)
-        // Mengambil 5 buku acak untuk slider
+        // 1. FEATURED BOOKS (Untuk Slider)
+        // Ambil 5 buku acak
         $featuredBooks = Book::with('user')
-            ->inRandomOrder()
-            ->limit(5)
-            ->get();
+                        ->inRandomOrder()
+                        ->limit(5)
+                        ->get();
 
-        // 2. RANKED BOOKS (Sidebar)
-        // Contoh logika: Buku dengan jumlah chapter terbanyak
+        // 2. RANKED BOOKS (Untuk Sidebar Kanan)
+        // Ranking berdasarkan jumlah chapter terbanyak
         $rankedBooks = Book::withCount('chapters')
-            ->orderBy('chapters_count', 'desc')
-            ->limit(5)
-            ->get();
+                        ->orderBy('chapters_count', 'desc')
+                        ->limit(5)
+                        ->get();
 
-        // 3. RECENT BOOKS (Main Grid)
-        // Mengambil buku terbaru dengan fitur pencarian
+        // 3. RECENT BOOKS (Untuk Grid Utama)
+        // Menggunakan paginate() agar halaman tidak berat
         $recentBooks = Book::with('user')
-            ->withCount('chapters') // Untuk menampilkan jumlah chapter di card
-            ->when($this->search, function($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('synopsis', 'like', '%' . $this->search . '%');
-            })
-            ->latest()
-            ->paginate(8); // Menggunakan pagination (8 buku per halaman)
+                        ->latest()
+                        ->paginate(8); 
 
         return view('livewire.public.landing-page', [
             'featuredBooks' => $featuredBooks,
             'rankedBooks'   => $rankedBooks,
-            'recentBooks'   => $recentBooks // <-- Variabel ini yang dicari oleh View
+            'recentBooks'   => $recentBooks
         ])->layout('layouts.public');
     }
 }
