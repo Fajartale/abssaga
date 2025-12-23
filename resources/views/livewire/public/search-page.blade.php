@@ -1,11 +1,19 @@
 <div class="min-h-screen bg-white font-mono text-black">
+    {{-- STYLE DIPINDAHKAN KE DALAM ROOT ELEMENT --}}
+    <style>
+        /* Custom Scrollbar agar sesuai tema */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
+        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
+    </style>
+
     {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
             
             {{-- LOGO GAMBAR (Kiri) --}}
             <a href="{{ route('home') }}" class="group flex items-center gap-2 select-none transition-transform hover:scale-105">
-                {{-- Pastikan gambar sudah ada di public/images/abcsaga-logo.png --}}
                 <img src="{{ asset('images/abcsaga-logo.png') }}" alt="ABCSAGA Logo" class="h-14 w-auto object-contain">
             </a>
             
@@ -102,12 +110,3 @@
         </div>
     </div>
 </div>
-
-{{-- STYLE TAMBAHAN --}}
-<style>
-    /* Custom Scrollbar agar sesuai tema */
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
-    ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
-    ::-webkit-scrollbar-thumb:hover { background: #333; }
-</style>
