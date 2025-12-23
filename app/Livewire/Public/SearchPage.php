@@ -10,41 +10,28 @@ class SearchPage extends Component
 {
     use WithPagination;
 
-    // Kita gunakan variabel public biasa
-    public $search = '';
-
-    public function mount()
-    {
-        // Tangkap data dari URL saat pertama kali load
-        $this->search = request()->query('q', '');
-    }
-
+    // Kita abaikan properti public $search untuk query database
+    // karena kita akan mengambil langsung dari Request URL
+    
     public function render()
     {
-        // 1. Pastikan kita selalu membaca nilai terbaru dari URL
-        // Ini mengatasi masalah jika Livewire mereset variabel
-        $keyword = request()->query('q', $this->search);
+        // 1. Ambil keyword langsung dari URL (?q=...)
+        // Jika tidak ada ?q=, maka nilainya null
+        $keyword = request()->query('q');
 
-        // 2. Query Database
+        // 2. Query menggunakan Scope yang baru kita buat
         $books = Book::with('user')
-            ->where(function($query) use ($keyword) {
-                // Jika keyword kosong, jangan filter (tampilkan semua atau kosongkan logic ini)
-                if (!empty($keyword)) {
-                    $term = '%' . $keyword . '%';
-                    $query->where('title', 'like', $term)
-                          ->orWhere('synopsis', 'like', $term)
-                          ->orWhereHas('user', function($q) use ($term) {
-                              $q->where('name', 'like', $term);
-                          });
-                }
+            // Jika $keyword ada isinya, jalankan scopeSearch
+            ->when($keyword, function($query) use ($keyword) {
+                return $query->search($keyword);
             })
             ->latest()
             ->paginate(12)
-            ->withQueryString(); // <--- PENTING: Agar parameter ?q=... ikut ke halaman 2, 3, dst.
+            ->withQueryString(); // Agar pagination halaman 2 tetap membawa ?q=...
 
         return view('livewire.public.search-page', [
             'books'  => $books,
-            'search' => $keyword, // Kirim keyword yang valid ke view
+            'search' => $keyword, // Kirim keyword untuk ditampilkan di view
         ])->layout('layouts.public');
     }
 }
