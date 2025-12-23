@@ -12,34 +12,27 @@ class SearchPage extends Component
 
     public function render()
     {
-        // 1. Ambil keyword dari URL
+        // 1. Ambil keyword langsung dari URL (?q=...)
         $keyword = request()->query('q');
 
-        // 2. Mulai Query
+        // 2. Mulai Query Dasar
         $query = Book::with('user');
 
-        // 3. Logic Filter Langsung (Tanpa Scope Model)
-        // Kita gunakan IF manual agar kita yakin 100% filter ini dijalankan
+        // 3. Logika Filter
         if (!empty($keyword)) {
-            $query->where(function($q) use ($keyword) {
-                $term = '%' . $keyword . '%';
-                
-                $q->where('title', 'like', $term)
-                  ->orWhere('synopsis', 'like', $term)
-                  ->orWhereHas('user', function($userQuery) use ($term) {
-                      $userQuery->where('name', 'like', $term);
-                  });
-            });
+            // PENCARIAN STRICT: HANYA MENCARI DI JUDUL
+            // Ini solusi agar hasil pencarian sangat akurat dan tidak "melebar" ke sinopsis.
+            $query->where('title', 'like', '%' . $keyword . '%');
         }
 
-        // 4. Eksekusi Pagination
+        // 4. Eksekusi Data (Urutkan terbaru & Pagination)
         $books = $query->latest()
                        ->paginate(12)
-                       ->withQueryString();
+                       ->withQueryString(); // Agar parameter ?q= tetap ikut saat pindah halaman
 
         return view('livewire.public.search-page', [
             'books'  => $books,
-            'search' => $keyword, 
+            'search' => $keyword,
         ])->layout('layouts.public');
     }
 }
