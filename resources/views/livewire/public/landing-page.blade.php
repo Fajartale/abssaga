@@ -43,20 +43,21 @@
                     </nav>
                 </div>
 
-                {{-- SEARCH BAR KANAN (BERFUNGSI) --}}
+                {{-- SEARCH BAR KANAN (MENGARAH KE HALAMAN SEARCH) --}}
                 <div class="w-full lg:w-auto">
-                    <div class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
-                        {{-- Wire Model terhubung ke $search di Controller --}}
+                    {{-- Menggunakan Form GET ke route('search') --}}
+                    <form action="{{ route('search') }}" method="GET" class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
                         <input 
-                            wire:model.live.debounce.300ms="search" 
                             type="text" 
+                            name="q" 
                             placeholder="CARI BUKU..." 
                             class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
+                            required
                         >
-                        <button class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors">
+                        <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors">
                             🔍
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -65,7 +66,7 @@
     {{-- MAIN CONTENT GRID --}}
     <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8 mt-8">
         
-        {{-- KOLOM KIRI (Konten Utama) --}}
+        {{-- KOLOM KIRI (Konten Utama 3/4) --}}
         <div class="lg:col-span-3 space-y-10">
             
             {{-- SLIDER SECTION (EDITOR'S CHOICE) --}}
@@ -119,7 +120,7 @@
                 </div>
             </div>
 
-            {{-- NEW RELEASES GRID (Tampilan Rak Buku) --}}
+            {{-- NEW RELEASES GRID (Tampilan Rak Buku Kecil) --}}
             <div>
                 <div class="flex items-center gap-4 mb-6 border-b-4 border-black pb-2">
                     <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
@@ -128,12 +129,12 @@
                     <div class="h-1 bg-yellow-400 flex-grow"></div>
                 </div>
 
-                {{-- Grid Rapat (5 Kolom Desktop) --}}
+                {{-- Grid Rapat (2 Kolom HP, 5 Kolom Desktop) --}}
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     @forelse($recentBooks as $book)
                         <a href="{{ route('book.detail', $book->id) }}" class="group relative block bg-white border-2 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1c0213] transition-all h-full flex flex-col">
                             
-                            {{-- Cover Image (Full Aspect) --}}
+                            {{-- Cover Image (Aspect Ratio Poster) --}}
                             <div class="aspect-[2/3] w-full overflow-hidden relative bg-gray-200">
                                 @if($book->cover_url)
                                     <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -161,7 +162,7 @@
                             </div>
                             
                             {{-- Judul (Selalu Tampil di Bawah) --}}
-                            <div class="p-2 border-t-2 border-black bg-white flex-grow flex items-center">
+                            <div class="p-2 border-t-2 border-black bg-white flex-grow flex items-center justify-center">
                                 <h4 class="text-[11px] font-bold uppercase leading-tight line-clamp-2 group-hover:text-purple-700 transition-colors w-full text-center">
                                     {{ $book->title }}
                                 </h4>
@@ -169,7 +170,7 @@
                         </a>
                     @empty
                         <div class="col-span-full border-2 border-dashed border-black p-8 text-center bg-gray-50">
-                            <h3 class="text-sm font-bold text-gray-500">TIDAK ADA HASIL PENCARIAN.</h3>
+                            <h3 class="text-sm font-bold text-gray-500">BELUM ADA BUKU.</h3>
                         </div>
                     @endforelse
                 </div>
@@ -181,7 +182,7 @@
             </div>
         </div>
 
-        {{-- KOLOM KANAN (SIDEBAR) --}}
+        {{-- KOLOM KANAN (SIDEBAR 1/4) --}}
         <div class="lg:col-span-1">
             <div class="sticky top-24 space-y-8">
                 

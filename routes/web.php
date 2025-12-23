@@ -31,7 +31,7 @@ Route::get('/book/{id}', BookDetail::class)->name('book.detail');
 Route::get('/read/{id}', ReadChapter::class)->name('chapter.read');
 
 // ROUTE BARU UNTUK PENCARIAN
-//Route::get('/search', SearchPage::class)->name('search');
+Route::get('/search', SearchPage::class)->name('search');
 
 
 // ====================================================
