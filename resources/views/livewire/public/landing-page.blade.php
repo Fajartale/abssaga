@@ -3,7 +3,6 @@
     <style>
         .text-stroke-black { -webkit-text-stroke: 2px black; }
         .text-stroke-sm { -webkit-text-stroke: 1px black; }
-        /* Hilangkan scrollbar default agar lebih rapi */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
         ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
@@ -59,7 +58,7 @@
         {{-- KOLOM KIRI (3/4) --}}
         <div class="lg:col-span-3 space-y-10">
             
-            {{-- SLIDER SECTION (EDITOR'S CHOICE) --}}
+            {{-- SLIDER SECTION (EDITOR'S CHOICE) - Tetap besar sebagai highlight --}}
             <div class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_#1c0213] relative group">
                 <div class="absolute -top-4 -left-2 bg-yellow-400 text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
                     EDITOR'S CHOICE 🔥
@@ -94,7 +93,6 @@
                                 </div>
                             @endforeach
 
-                            {{-- Tombol Navigasi Slider --}}
                             @if($featuredBooks->count() > 1)
                                 <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">◀</button>
                                 <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">▶</button>
@@ -102,17 +100,15 @@
 
                         </div>
                     @else
-                        {{-- Placeholder Jika Kosong --}}
                         <div class="h-full w-full flex flex-col items-center justify-center text-white">
                             <span class="text-6xl mb-4">📚</span>
                             <h3 class="text-2xl font-bold uppercase">BELUM ADA BUKU FEATURED</h3>
-                            <p class="text-gray-400 text-sm">Tambahkan buku di database.</p>
                         </div>
                     @endif
                 </div>
             </div>
 
-            {{-- NEW RELEASES GRID --}}
+            {{-- NEW RELEASES GRID (UKURAN KECIL FULL COVER) --}}
             <div>
                 <div class="flex items-center gap-4 mb-6 border-b-4 border-black pb-2">
                     <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
@@ -121,42 +117,48 @@
                     <div class="h-1 bg-yellow-400 flex-grow"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- UPDATE: Grid lebih rapat (2 kolom HP, 4-5 kolom Desktop) untuk tampilan seperti rak buku --}}
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     @forelse($recentBooks as $book)
-                        <div class="group border-4 border-black bg-white hover:bg-yellow-50 transition-all hover:shadow-[8px_8px_0px_0px_#1c0213] hover:-translate-y-1 flex flex-col h-full">
-                            {{-- Cover Buku --}}
-                            <div class="h-48 bg-gray-200 border-b-4 border-black relative overflow-hidden">
+                        <a href="{{ route('book.detail', $book->id) }}" class="group relative block bg-white border-2 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1c0213] transition-all">
+                            
+                            {{-- Cover Buku (Full Aspect Ratio Poster) --}}
+                            <div class="aspect-[2/3] w-full overflow-hidden relative bg-gray-200">
                                 @if($book->cover_url)
                                     <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                                        <span class="text-4xl font-black text-gray-400 rotate-12">NO COVER</span>
+                                    <div class="w-full h-full flex flex-col items-center justify-center bg-gray-300 p-2 text-center">
+                                        <span class="text-xs font-bold text-gray-500 break-words">{{ $book->title }}</span>
+                                        <span class="text-2xl font-black text-gray-400 mt-2">NO IMG</span>
                                     </div>
                                 @endif
-                                <div class="absolute top-2 right-2 bg-black text-white text-xs font-bold px-2 py-1 border border-white">
+                                
+                                {{-- Overlay Judul (Muncul saat Hover) --}}
+                                <div class="absolute inset-0 bg-black/80 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <h4 class="text-white text-xs font-bold uppercase leading-tight line-clamp-3">
+                                        {{ $book->title }}
+                                    </h4>
+                                    <p class="text-[10px] text-yellow-400 mt-1 truncate">
+                                        {{ $book->user->name ?? 'Anonim' }}
+                                    </p>
+                                </div>
+
+                                {{-- Badge New (Pojok Kiri Atas) --}}
+                                <div class="absolute top-0 left-0 bg-yellow-400 text-black text-[10px] font-black px-1 border-b border-r border-black">
                                     NEW
                                 </div>
                             </div>
                             
-                            {{-- Info Buku --}}
-                            <div class="p-5 flex flex-col flex-grow">
-                                <h4 class="text-xl font-black uppercase mb-1 leading-tight group-hover:text-[#1c0213]">
-                                    {{ Str::limit($book->title, 40) }}
+                            {{-- Judul Statis di Bawah Cover (Opsional, agar tetap terbaca tanpa hover) --}}
+                            <div class="p-2 border-t-2 border-black bg-white h-14">
+                                <h4 class="text-xs font-bold uppercase leading-tight line-clamp-2 group-hover:text-purple-700 transition-colors">
+                                    {{ $book->title }}
                                 </h4>
-                                <p class="text-xs font-bold text-yellow-600 mb-3">
-                                    {{ $book->user->name ?? 'Unknown Author' }}
-                                </p>
-                                <p class="text-xs text-gray-600 line-clamp-3 mb-4 font-medium flex-grow">
-                                    {{ $book->synopsis }}
-                                </p>
-                                <a href="{{ route('book.detail', $book->id) }}" class="w-full block text-center bg-transparent border-2 border-black py-2 font-bold text-sm hover:bg-black hover:text-white transition-colors uppercase">
-                                    Detail Buku ->
-                                </a>
                             </div>
-                        </div>
+                        </a>
                     @empty
-                        <div class="col-span-2 border-4 border-dashed border-black p-12 text-center bg-gray-50">
-                            <h3 class="text-xl font-bold text-gray-500">BELUM ADA BUKU TERBARU.</h3>
+                        <div class="col-span-full border-2 border-dashed border-black p-8 text-center bg-gray-50">
+                            <h3 class="text-sm font-bold text-gray-500">BELUM ADA BUKU.</h3>
                         </div>
                     @endforelse
                 </div>
