@@ -4,40 +4,39 @@ namespace App\Livewire\Public;
 
 use Livewire\Component;
 use App\Models\Chapter;
+use App\Models\Book;
 
 class ReadChapter extends Component
 {
     public $chapter;
+    public $book;
+    public $nextChapter;
+    public $prevChapter;
 
     public function mount($id)
     {
-        // Load chapter beserta relasi buku agar bisa mengambil ID buku
+        // 1. Ambil data chapter saat ini
         $this->chapter = Chapter::with('book')->findOrFail($id);
-    }
+        $this->book = $this->chapter->book;
 
-    // Logic Tombol Previous
-    public function getPrevChapter()
-    {
-        return Chapter::where('book_id', $this->chapter->book_id)
-            ->where('order', '<', $this->chapter->order)
-            ->orderBy('order', 'desc') // Ambil yang paling dekat sebelumnya
-            ->first();
-    }
-
-    // Logic Tombol Next
-    public function getNextChapter()
-    {
-        return Chapter::where('book_id', $this->chapter->book_id)
+        // 2. Cari Chapter Selanjutnya (Next)
+        // Cari chapter dengan 'order' lebih besar dari chapter ini, di buku yang sama
+        $this->nextChapter = Chapter::where('book_id', $this->book->id)
             ->where('order', '>', $this->chapter->order)
-            ->orderBy('order', 'asc') // Ambil yang paling dekat setelahnya
+            ->orderBy('order', 'asc')
+            ->first();
+
+        // 3. Cari Chapter Sebelumnya (Prev)
+        // Cari chapter dengan 'order' lebih kecil dari chapter ini
+        $this->prevChapter = Chapter::where('book_id', $this->book->id)
+            ->where('order', '<', $this->chapter->order)
+            ->orderBy('order', 'desc')
             ->first();
     }
 
     public function render()
     {
-        return view('livewire.public.read-chapter', [
-            'prev' => $this->getPrevChapter(),
-            'next' => $this->getNextChapter()
-        ])->layout('layouts.public');
+        return view('livewire.public.read-chapter')
+            ->layout('layouts.public'); 
     }
 }
