@@ -11,44 +11,53 @@ class SearchPage extends Component
 {
     use WithPagination;
 
-    // Menangkap parameter ?q=... dari URL
-    #[Url(as: 'q')] 
+    // Sinkronisasi URL ?q=... dengan variabel $search
+    // history: true agar URL berubah saat user mengetik
+    #[Url(as: 'q', history: true)] 
     public $search = '';
 
     /**
-     * Tambahkan mount() untuk memastikan data tertangkap saat pertama load
-     * Ini langkah antisipasi jika atribut #[Url] gagal di beberapa versi Livewire
+     * Mount: Memaksa variabel $search terisi dari URL saat halaman pertama kali dibuka.
+     * Ini adalah backup jika atribut #[Url] tidak langsung bekerja.
      */
     public function mount()
     {
-        $this->search = request()->query('q', $this->search);
+        $this->search = request()->query('q', '');
+    }
+
+    /**
+     * Reset pagination ke halaman 1 setiap kali search berubah
+     */
+    public function updatedSearch() 
+    {
+        $this->resetPage();
     }
 
     public function render()
     {
-        $books = Book::with('user')
-            ->when($this->search, function($query) {
-                // --- PERBAIKAN UTAMA DI SINI ---
-                // Kita harus membungkus semua 'orWhere' dalam satu 'where(function($q){...})'
-                // Ini setara dengan SQL: WHERE (title LIKE %..% OR synopsis LIKE %..%)
-                // Tanpa ini, logika OR bisa "membocorkan" data (menampilkan semua buku).
+        // 1. Mulai Query Dasar
+        $query = Book::with('user')->latest();
+
+        // 2. Cek apakah ada pencarian
+        if (!empty($this->search)) {
+            // Jika ada search, tambahkan filter dengan kurung pengelompokan (where group)
+            $query->where(function($q) {
+                $term = '%' . $this->search . '%';
                 
-                $query->where(function($q) {
-                    $term = '%' . $this->search . '%';
-                    
-                    $q->where('title', 'like', $term)
-                      ->orWhere('synopsis', 'like', $term)
-                      ->orWhereHas('user', function($userQuery) use ($term) {
-                          $userQuery->where('name', 'like', $term);
-                      });
-                });
-            })
-            ->latest()
-            ->paginate(12); 
+                $q->where('title', 'like', $term)
+                  ->orWhere('synopsis', 'like', $term)
+                  ->orWhereHas('user', function($userQ) use ($term) {
+                      $userQ->where('name', 'like', $term);
+                  });
+            });
+        }
+
+        // 3. Eksekusi Pagination
+        $books = $query->paginate(12);
 
         return view('livewire.public.search-page', [
             'books'  => $books,
-            'search' => $this->search,
+            'search' => $this->search, // Pastikan variabel ini dikirim ke View
         ])->layout('layouts.public');
     }
 }
