@@ -9,6 +9,7 @@ use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
 use App\Livewire\Admin\ManageBooks;
 use App\Livewire\Admin\ChapterEditor;
+use App\Livewire\Public\SearchPage;
 
 /*
 |--------------------------------------------------------------------------
