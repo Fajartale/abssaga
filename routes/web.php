@@ -30,6 +30,9 @@ Route::get('/book/{id}', BookDetail::class)->name('book.detail');
 // Halaman Baca Chapter
 Route::get('/read/{id}', ReadChapter::class)->name('chapter.read');
 
+// ROUTE BARU UNTUK PENCARIAN
+//Route::get('/search', SearchPage::class)->name('search');
+
 
 // ====================================================
 // 2. AUTHOR / ADMIN ROUTES (Wajib Login)
@@ -52,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 
 // ====================================================
