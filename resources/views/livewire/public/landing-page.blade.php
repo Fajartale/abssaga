@@ -13,23 +13,15 @@
 
     {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="max-w-7xl mx-auto px-6 py-3"> {{-- Padding disesuaikan agar logo pas --}}
             <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
                 
                 {{-- LOGO & NAVIGASI KIRI --}}
                 <div class="flex flex-col lg:flex-row items-center gap-8 w-full lg:w-auto">
-                    {{-- Logo --}}
+                    {{-- Logo Gambar Baru --}}
                     <a href="{{ route('home') }}" class="group flex items-center gap-3 select-none hover:scale-105 transition-transform">
-                        <div class="w-12 h-10 bg-white border-2 border-black relative shadow-[4px_4px_0px_0px_#facc15]">
-                            <div class="absolute inset-0 border-r-2 border-black w-1/2 bg-gray-100"></div>
-                            <div class="absolute top-2 left-1 w-8 h-1 bg-black"></div>
-                            <div class="absolute top-4 left-1 w-8 h-1 bg-black"></div>
-                        </div>
-                        <div class="leading-none">
-                            <h1 class="text-4xl font-black text-white tracking-tighter">
-                                ABC<span class="text-yellow-400 text-stroke-sm">SAGA</span>
-                            </h1>
-                        </div>
+                        {{-- Pastikan file gambar ada di public/images/abcsaga-logo.png --}}
+                        <img src="{{ asset('images/abcsaga-logo.png') }}" alt="ABCSAGA Logo" class="h-14 w-auto object-contain">
                     </a>
 
                     {{-- Menu Navigasi --}}
@@ -43,9 +35,8 @@
                     </nav>
                 </div>
 
-                {{-- SEARCH BAR KANAN (MENGARAH KE HALAMAN SEARCH) --}}
+                {{-- SEARCH BAR KANAN (Form HTML Murni) --}}
                 <div class="w-full lg:w-auto">
-                    {{-- Menggunakan Form GET ke route('search') --}}
                     <form action="{{ route('search') }}" method="GET" class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
                         <input 
                             type="text" 
