@@ -14,7 +14,10 @@
             line-height: 1.8;
             font-size: 1.125rem; /* 18px */
         }
-        .prose-content p { margin-bottom: 1.5em; }
+        /* Memberikan jarak antar paragraf jika konten menggunakan tag <p> atau <div> */
+        .prose-content p, .prose-content div { 
+            margin-bottom: 1.5em; 
+        }
 
         /* CLASS ANTI-COPY KUAT (CSS) */
         .protected-content {
@@ -22,7 +25,6 @@
             -moz-user-select: none;    /* Firefox */
             -ms-user-select: none;     /* IE10+/Edge */
             user-select: none;         /* Standard */
-            pointer-events: none;      /* Mencegah interaksi mouse seperti drag gambar (opsional, hati-hati jika ada link) */
         }
         
         /* Agar link/tombol tetap bisa diklik meskipun ada pointer-events:none di parent */
@@ -42,7 +44,6 @@
             </a>
             
             {{-- SEARCH BAR --}}
-            {{-- Form input tetap harus bisa diketik (user-select: auto) --}}
             <form action="{{ route('search') }}" method="GET" class="w-full max-w-md select-text">
                 <div class="relative flex border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
                     <input 
@@ -73,7 +74,6 @@
             </div>
 
             <div class="w-full md:w-auto">
-                {{-- Select tetap bisa dipilih --}}
                 <select onchange="location = this.value;" class="w-full md:w-64 bg-yellow-400 border-2 border-black font-bold px-4 py-2 text-sm focus:ring-0 cursor-pointer hover:bg-yellow-500 transition-colors uppercase">
                     @foreach($chapter->book->chapters as $c)
                         <option value="{{ route('chapter.read', $c->id) }}" {{ $c->id == $chapter->id ? 'selected' : '' }}>
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        {{-- READING AREA (PROTECTED) --}}
+        {{-- READING AREA --}}
         <article class="bg-white border-2 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_#000] relative">
             
             {{-- Chapter Header --}}
@@ -99,10 +99,10 @@
                 </div>
             </header>
 
-            {{-- CONTENT TEXT - INI YANG DILINDUNGI --}}
-            {{-- Class 'protected-content' mematikan seleksi via CSS --}}
+            {{-- CONTENT TEXT --}}
+            {{-- PERBAIKAN UTAMA: Menggunakan {!! !!} agar HTML dirender --}}
             <div class="prose-content text-justify text-gray-900 protected-content">
-                {!! nl2br(e($chapter->content)) !!}
+                {!! $chapter->content !!}
             </div>
 
             {{-- Footer Note --}}
@@ -145,32 +145,25 @@
 
     </div>
 
-    {{-- JAVASCRIPT PROTEKSI TAMBAHAN --}}
+    {{-- JAVASCRIPT PROTEKSI --}}
     <script>
         // 1. Matikan Klik Kanan
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
 
-        // 2. Matikan Shortcut Keyboard (Ctrl+C, Ctrl+U, Ctrl+P, Ctrl+S)
+        // 2. Matikan Shortcut Keyboard
         document.addEventListener('keydown', function(e) {
-            // Cek jika tombol Ctrl ditekan
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key.toLowerCase()) {
-                    case 'c': // Copy
-                    case 'u': // View Source
-                    case 'p': // Print
-                    case 's': // Save
-                    case 'a': // Select All
+                    case 'c': case 'u': case 'p': case 's': case 'a':
                         e.preventDefault();
-                        // Opsional: Tampilkan alert
-                        // alert('Fitur ini dinonaktifkan.');
                         break;
                 }
             }
         });
 
-        // 3. Matikan Drag Text (Tambahan)
+        // 3. Matikan Drag Text
         document.addEventListener('dragstart', function(e) {
             e.preventDefault();
         });
