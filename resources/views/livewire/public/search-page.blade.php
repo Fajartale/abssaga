@@ -1,17 +1,8 @@
 <div class="min-h-screen bg-white font-mono text-black">
-    {{-- CUSTOM STYLES --}}
-    <style>
-        .text-stroke-black { -webkit-text-stroke: 2px black; }
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
-        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
-        ::-webkit-scrollbar-thumb:hover { background: #333; }
-    </style>
-
     {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            {{-- LOGO (Kembali ke Home) --}}
+            {{-- LOGO --}}
             <a href="{{ route('home') }}" class="group flex items-center gap-2 select-none hover:scale-105 transition-transform">
                 <div class="leading-none">
                     <h1 class="text-3xl font-black text-white tracking-tighter">
@@ -20,14 +11,13 @@
                 </div>
             </a>
             
-            {{-- SEARCH BAR HEADER (Agar user bisa mencari ulang tanpa kembali) --}}
+            {{-- SEARCH BAR HEADER --}}
             <form action="{{ route('search') }}" method="GET" class="w-full max-w-md">
                 <div class="relative flex border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
-                    {{-- Input Name="q" Wajib ada agar ditangkap Controller --}}
                     <input 
                         type="text" 
                         name="q" 
-                        value="{{ $search }}" 
+                        value="{{ request('q') }}" {{-- AMBIL LANGSUNG DARI REQUEST --}}
                         placeholder="CARI JUDUL LAIN..." 
                         class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                     >
@@ -42,13 +32,13 @@
     {{-- MAIN CONTENT --}}
     <div class="max-w-7xl mx-auto p-6 mt-8">
         
-        {{-- HEADER HASIL PENCARIAN --}}
+        {{-- HEADER HASIL --}}
         <div class="border-b-4 border-black pb-4 mb-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
             <div>
                 <h2 class="text-4xl font-black uppercase">HASIL PENCARIAN</h2>
-                @if(!empty($search))
+                @if(request('q'))
                     <p class="text-gray-600 font-bold mt-1 text-lg">
-                        Menampilkan hasil untuk: "<span class="text-purple-700 bg-purple-100 px-1">{{ $search }}</span>"
+                        Menampilkan hasil untuk: "<span class="text-purple-700 bg-purple-100 px-1">{{ request('q') }}</span>"
                     </p>
                 @else
                     <p class="text-gray-600 font-bold mt-1 text-lg">Menampilkan semua buku terbaru</p>
@@ -56,11 +46,11 @@
             </div>
             
             <div class="bg-yellow-400 text-black px-4 py-2 font-black border-2 border-black text-sm shadow-[4px_4px_0px_0px_#000] transform -rotate-2">
-                {{ $books->total() }} BUKU DITEMUKAN
+                {{ $books->total() }} DITEMUKAN
             </div>
         </div>
 
-        {{-- GRID HASIL PENCARIAN (Sama dengan Landing Page) --}}
+        {{-- GRID HASIL --}}
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             @forelse($books as $book)
                 <a href="{{ route('book.detail', $book->id) }}" class="group relative block bg-white border-2 border-black hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1c0213] transition-all h-full flex flex-col">
@@ -76,7 +66,6 @@
                             </div>
                         @endif
 
-                        {{-- Overlay Hover Info --}}
                         <div class="absolute inset-0 bg-black/80 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <p class="text-[10px] text-yellow-400 uppercase font-bold mb-1">
                                 {{ $book->user->name ?? 'Anonim' }}
@@ -95,12 +84,11 @@
                     </div>
                 </a>
             @empty
-                {{-- State Kosong (Jika tidak ditemukan) --}}
                 <div class="col-span-full py-20 text-center border-4 border-dashed border-gray-300 bg-gray-50 rounded-lg">
-                    <span class="text-6xl block mb-4">Empty 🤷‍♂️</span>
-                    <h3 class="text-2xl font-black text-gray-400 uppercase">Tidak ditemukan buku dengan kata kunci tersebut.</h3>
-                    <p class="text-gray-500 mt-2 font-bold">Coba gunakan kata kunci lain yang lebih umum.</p>
-                    <a href="{{ route('home') }}" class="inline-block mt-6 px-6 py-2 bg-black text-white font-bold border-2 border-black hover:bg-yellow-400 hover:text-black transition-colors shadow-[4px_4px_0px_0px_#ccc]">
+                    <span class="text-6xl block mb-4">🤷‍♂️</span>
+                    <h3 class="text-2xl font-black text-gray-400 uppercase">Tidak ditemukan.</h3>
+                    <p class="text-gray-500 mt-2 font-bold">Coba kata kunci lain.</p>
+                    <a href="{{ route('home') }}" class="inline-block mt-6 px-6 py-2 bg-black text-white font-bold border-2 border-black hover:bg-yellow-400 hover:text-black transition-colors">
                         KEMBALI KE BERANDA
                     </a>
                 </div>
