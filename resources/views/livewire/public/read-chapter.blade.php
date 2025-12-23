@@ -1,169 +1,140 @@
-<div class="min-h-screen bg-[#f8f8f8] font-mono text-black">
-    
-    {{-- CUSTOM STYLE --}}
+<div class="min-h-screen bg-[#f8f8f8] text-black font-mono">
+    {{-- STYLE ROOT --}}
     <style>
-        /* Styling Konten Trix */
-        .trix-content h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; }
-        .trix-content p { margin-bottom: 1em; line-height: 1.8; }
-        .trix-content blockquote { border-left: 4px solid #facc15; padding-left: 1rem; font-style: italic; margin: 1rem 0; background: #fff; padding: 1rem; }
-        .trix-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-        .trix-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
-        .trix-content a { color: blue; text-decoration: underline; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
+        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
         
-        /* Progress Bar Reading Indicator */
-        #progress-bar { width: 0%; height: 6px; background: #facc15; position: fixed; top: 0; left: 0; z-index: 100; border-bottom: 2px solid black; }
-
-        /* --- FITUR ANTI COPY (CSS) --- */
-        .prevent-select {
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10 and IE 11 */
-            user-select: none; /* Standard syntax */
+        /* Typography khusus untuk area baca agar nyaman */
+        .prose-content {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            font-size: 1.125rem; /* 18px */
         }
+        .prose-content p { margin-bottom: 1.5em; }
     </style>
 
-    {{-- PROGRESS BAR SCROLL --}}
-    <div id="progress-bar"></div>
-
-    {{-- NAVBAR SEDERHANA (STICKY) --}}
-    <div class="bg-[#1c0213] text-white border-b-4 border-black sticky top-0 z-50 shadow-lg">
-        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+    {{-- HEADER SECTION (Konsisten) --}}
+    <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
             
-            {{-- Back Button --}}
-            <a href="{{ route('book.detail', $book->id) }}" class="flex items-center gap-2 hover:text-yellow-400 transition-colors font-bold text-sm uppercase">
-                <span>&larr; KEMBALI</span>
+            {{-- LOGO --}}
+            <a href="{{ route('home') }}" class="group flex items-center gap-2 select-none transition-transform hover:scale-105">
+                <img src="{{ asset('images/abcsaga-logo.png') }}" alt="ABCSAGA Logo" class="h-14 w-auto object-contain">
             </a>
+            
+            {{-- SEARCH BAR --}}
+            <form action="{{ route('search') }}" method="GET" class="w-full max-w-md">
+                <div class="relative flex border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        value="{{ request('q') }}" 
+                        placeholder="CARI JUDUL LAIN..." 
+                        class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
+                    >
+                    <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors border-l-2 border-black font-bold">
+                        CARI
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            {{-- Judul Buku (Truncated) --}}
-            <div class="hidden md:block font-bold text-yellow-400 tracking-widest text-sm">
-                {{ Str::limit($book->title, 40) }}
+    {{-- MAIN CONTENT --}}
+    <div class="max-w-5xl mx-auto p-4 md:p-8 mt-4">
+        
+        {{-- TOP NAVIGATION BAR --}}
+        <div class="bg-white border-2 border-black p-4 mb-8 shadow-[6px_6px_0px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-4">
+            {{-- Breadcrumb / Info Buku --}}
+            <div class="flex items-center gap-2 text-sm font-bold overflow-hidden w-full md:w-auto">
+                <a href="{{ route('book.detail', $chapter->book->id) }}" class="flex items-center gap-2 hover:text-purple-700 whitespace-nowrap">
+                    <span class="bg-black text-white px-2 py-1">⬅ KEMBALI</span>
+                    <span class="truncate max-w-[150px] md:max-w-xs">{{ $chapter->book->title }}</span>
+                </a>
             </div>
 
-            {{-- Home Button --}}
-            <a href="{{ route('home') }}" class="font-black text-xl hover:scale-110 transition-transform">
-                ABC<span class="text-yellow-400">SAGA</span>
-            </a>
-        </div>
-    </div>
-
-    {{-- MAIN READING AREA (Diberi class prevent-select) --}}
-    <div class="max-w-4xl mx-auto p-6 md:p-12 my-8 bg-white border-4 border-black shadow-[12px_12px_0px_0px_#1c0213] prevent-select" 
-         oncontextmenu="return false;"> {{-- Matikan Klik Kanan di area ini --}}
-        
-        {{-- HEADER CHAPTER --}}
-        <div class="text-center border-b-4 border-black pb-8 mb-8">
-            <span class="bg-yellow-400 text-black px-3 py-1 font-bold border-2 border-black text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                CHAPTER {{ $chapter->order }}
-            </span>
-            <h1 class="text-4xl md:text-5xl font-black mt-4 uppercase leading-tight">
-                {{ $chapter->title }}
-            </h1>
-            <p class="text-gray-500 text-sm mt-2 font-bold">
-                Diposting: {{ $chapter->created_at->format('d M Y') }}
-            </p>
+            {{-- Chapter Selector (Dropdown) --}}
+            <div class="w-full md:w-auto">
+                <select onchange="location = this.value;" class="w-full md:w-64 bg-yellow-400 border-2 border-black font-bold px-4 py-2 text-sm focus:ring-0 cursor-pointer hover:bg-yellow-500 transition-colors uppercase">
+                    @foreach($chapter->book->chapters as $c)
+                        <option value="{{ route('chapter.read', $c->id) }}" {{ $c->id == $chapter->id ? 'selected' : '' }}>
+                            Chapter {{ $loop->iteration }}: {{ Str::limit($c->title, 20) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
-        {{-- NAVIGATION TOP --}}
-        <div class="flex justify-between items-center gap-4 mb-10">
+        {{-- READING AREA --}}
+        <article class="bg-white border-2 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_#000] relative">
+            
+            {{-- Chapter Header --}}
+            <header class="mb-10 text-center border-b-2 border-black pb-6 border-dashed">
+                <h1 class="text-3xl md:text-5xl font-black uppercase mb-4 leading-tight">
+                    {{ $chapter->title }}
+                </h1>
+                <div class="text-sm font-bold text-gray-500 uppercase flex justify-center gap-4">
+                    <span>Posted: {{ $chapter->created_at->format('d M Y') }}</span>
+                    <span>•</span>
+                    <span>By: {{ $chapter->book->user->name ?? 'Anonim' }}</span>
+                </div>
+            </header>
+
+            {{-- Chapter Content --}}
+            {{-- Menggunakan class 'prose-content' untuk font Serif yang nyaman dibaca --}}
+            <div class="prose-content text-justify text-gray-900">
+                {!! nl2br(e($chapter->content)) !!}
+            </div>
+
+            {{-- Footer Note --}}
+            <div class="mt-12 pt-8 border-t-4 border-black text-center">
+                <span class="bg-black text-white px-4 py-1 font-bold text-sm transform -rotate-1 inline-block">
+                    END OF CHAPTER
+                </span>
+            </div>
+        </article>
+
+        {{-- BOTTOM NAVIGATION BUTTONS --}}
+        <div class="mt-8 grid grid-cols-2 gap-4">
+            {{-- Tombol Previous --}}
+            @php
+                $prevChapter = $chapter->book->chapters->where('order', '<', $chapter->order)->sortByDesc('order')->first();
+                $nextChapter = $chapter->book->chapters->where('order', '>', $chapter->order)->sortBy('order')->first();
+            @endphp
+
             @if($prevChapter)
-                <a href="{{ route('chapter.read', $prevChapter->id) }}" class="flex-1 bg-white text-black text-center py-2 font-bold border-2 border-black hover:bg-black hover:text-white transition-all text-sm">
-                    &larr; PREV
+                <a href="{{ route('chapter.read', $prevChapter->id) }}" class="flex flex-col items-center justify-center bg-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] hover:bg-yellow-400 hover:-translate-y-1 transition-all group">
+                    <span class="text-xs font-bold text-gray-500 uppercase mb-1">Previous</span>
+                    <span class="text-lg font-black group-hover:underline">PREV CHAPTER</span>
                 </a>
             @else
-                <button disabled class="flex-1 bg-gray-200 text-gray-400 py-2 font-bold border-2 border-gray-300 cursor-not-allowed text-sm">
-                    &larr; PREV
+                <button disabled class="flex flex-col items-center justify-center bg-gray-200 border-2 border-gray-400 p-4 opacity-50 cursor-not-allowed">
+                    <span class="text-lg font-black text-gray-500">START</span>
                 </button>
             @endif
 
-            <a href="{{ route('book.detail', $book->id) }}" class="px-4 py-2 font-bold border-2 border-black hover:bg-gray-100 text-sm">
-                LIST
-            </a>
-
+            {{-- Tombol Next --}}
             @if($nextChapter)
-                <a href="{{ route('chapter.read', $nextChapter->id) }}" class="flex-1 bg-black text-white text-center py-2 font-bold border-2 border-black hover:bg-yellow-400 hover:text-black transition-all text-sm">
-                    NEXT &rarr;
+                <a href="{{ route('chapter.read', $nextChapter->id) }}" class="flex flex-col items-center justify-center bg-black text-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#facc15] hover:bg-yellow-400 hover:text-black hover:-translate-y-1 transition-all group">
+                    <span class="text-xs font-bold text-gray-400 group-hover:text-black uppercase mb-1">Next</span>
+                    <span class="text-lg font-black group-hover:underline">NEXT CHAPTER</span>
                 </a>
             @else
-                <button disabled class="flex-1 bg-gray-200 text-gray-400 py-2 font-bold border-2 border-gray-300 cursor-not-allowed text-sm">
-                    NEXT &rarr;
+                <button disabled class="flex flex-col items-center justify-center bg-gray-200 border-2 border-gray-400 p-4 opacity-50 cursor-not-allowed">
+                    <span class="text-lg font-black text-gray-500">LATEST</span>
                 </button>
             @endif
         </div>
 
-        {{-- ISI KONTEN (TRIX HTML) --}}
-        <div class="trix-content text-lg md:text-xl text-gray-900 leading-relaxed font-serif text-justify">
-            {!! $chapter->content !!}
-        </div>
-
-        {{-- NAVIGATION BOTTOM --}}
-        <div class="flex justify-between items-center gap-4 mt-16 pt-8 border-t-4 border-black">
-             @if($prevChapter)
-                <a href="{{ route('chapter.read', $prevChapter->id) }}" class="flex-1 bg-white text-black text-center py-4 font-black border-4 border-black hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#facc15] transition-all">
-                    &larr; CHAPTER SEBELUMNYA
-                </a>
-            @else
-                <button disabled class="flex-1 bg-gray-100 text-gray-400 py-4 font-black border-4 border-gray-300 cursor-not-allowed">
-                    INI CHAPTER AWAL
-                </button>
-            @endif
-
-            @if($nextChapter)
-                <a href="{{ route('chapter.read', $nextChapter->id) }}" class="flex-1 bg-yellow-400 text-black text-center py-4 font-black border-4 border-black hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#ccc] transition-all">
-                    CHAPTER BERIKUTNYA &rarr;
-                </a>
-            @else
-                <button disabled class="flex-1 bg-gray-100 text-gray-400 py-4 font-black border-4 border-gray-300 cursor-not-allowed">
-                    INI CHAPTER TERAKHIR
-                </button>
-            @endif
+        {{-- Section Komentar (Opsional Placeholder) --}}
+        <div class="mt-12 border-t-4 border-black pt-8">
+            <h3 class="text-xl font-black uppercase mb-4">Komentar</h3>
+            <div class="bg-gray-100 border-2 border-black p-8 text-center text-gray-500 italic">
+                Fitur komentar belum tersedia.
+            </div>
         </div>
 
     </div>
-
-    {{-- FOOTER SIMPLE --}}
-    <div class="max-w-4xl mx-auto px-6 pb-12 text-center text-gray-500 text-xs font-bold">
-        &copy; 2025 ABCSAGA. Happy Reading!
-    </div>
-
 </div>
-
-{{-- SCRIPT: PROGRESS BAR & ANTI COPY PROTECTION --}}
-<script>
-    // 1. Reading Progress Bar
-    window.onscroll = function() {
-        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        let scrolled = (winScroll / height) * 100;
-        document.getElementById("progress-bar").style.width = scrolled + "%";
-    };
-
-    // 2. Disable Right Click (Context Menu) Global
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    // 3. Disable Keyboard Shortcuts (Ctrl+C, Ctrl+U, Ctrl+S, Ctrl+P, F12)
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) { // F12 (Inspect Element)
-            return false;
-        }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
-            return false;
-        }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
-            return false;
-        }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
-            return false;
-        }
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U (View Source)
-            return false;
-        }
-        if(e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) { // Ctrl+S (Save)
-            return false;
-        }
-        if(e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) { // Ctrl+P (Print)
-            return false;
-        }
-        if(e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+C (Copy)
-            return false;
-        }
-    }
-</script>
