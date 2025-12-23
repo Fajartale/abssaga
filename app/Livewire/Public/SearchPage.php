@@ -10,43 +10,36 @@ class SearchPage extends Component
 {
     use WithPagination;
 
-    // Variabel ini untuk binding data ke View (opsional, tapi bagus untuk sinkronisasi)
-    public $search = '';
-
-    /**
-     * MOUNT: Berjalan sekali saat halaman dimuat.
-     * Mengambil parameter ?q=... dari URL dan memasukkannya ke variabel $search.
-     */
-    public function mount()
-    {
-        $this->search = request()->query('q', '');
-    }
-
-    /**
-     * RENDER: Berjalan setiap kali ada update atau refresh.
-     */
     public function render()
     {
-        // 1. Sumber Kebenaran (Source of Truth) adalah URL
-        // Kita paksa ambil dari request('q') agar pencarian tidak hilang saat ganti halaman pagination
+        // 1. Ambil keyword dari URL
         $keyword = request()->query('q');
 
-        // 2. Query Database
-        $books = Book::with('user')
-            // Cek jika ada keyword
-            ->when($keyword, function($query) use ($keyword) {
-                // Panggil Scope 'search' yang sudah kita buat di Model Book.php
-                // Ini menjamin logika OR terbungkus rapi: WHERE (title... OR synopsis...)
-                return $query->search($keyword);
-            })
-            ->latest() // Urutkan dari yang terbaru
-            ->paginate(12) // Batasi 12 buku per halaman
-            ->withQueryString(); // PENTING: Agar parameter ?q=... ikut terbawa ke link halaman 2, 3, dst.
+        // 2. Mulai Query
+        $query = Book::with('user');
 
-        // 3. Kirim data ke View
+        // 3. Logic Filter Langsung (Tanpa Scope Model)
+        // Kita gunakan IF manual agar kita yakin 100% filter ini dijalankan
+        if (!empty($keyword)) {
+            $query->where(function($q) use ($keyword) {
+                $term = '%' . $keyword . '%';
+                
+                $q->where('title', 'like', $term)
+                  ->orWhere('synopsis', 'like', $term)
+                  ->orWhereHas('user', function($userQuery) use ($term) {
+                      $userQuery->where('name', 'like', $term);
+                  });
+            });
+        }
+
+        // 4. Eksekusi Pagination
+        $books = $query->latest()
+                       ->paginate(12)
+                       ->withQueryString();
+
         return view('livewire.public.search-page', [
             'books'  => $books,
-            'search' => $keyword, // Kirim keyword agar input text tetap terisi
+            'search' => $keyword, 
         ])->layout('layouts.public');
     }
 }
