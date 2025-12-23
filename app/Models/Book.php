@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class Book extends Model
 {
@@ -17,37 +18,40 @@ class Book extends Model
         'slug',
         'synopsis',
         'cover_image',
-        'is_published', // Pastikan kolom ini ada di migration jika ingin dipakai
+        'is_published',
     ];
 
-    /**
-     * Relasi: Buku dimiliki oleh satu User (Penulis).
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relasi: Buku memiliki banyak Chapter.
-     * Diurutkan berdasarkan kolom 'order' (urutan bab).
-     */
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class)->orderBy('order', 'asc');
     }
 
     /**
-     * Accessor helper untuk URL cover.
-     * Cara pakai: $book->cover_url
+     * Accessor Cerdas untuk URL Cover
+     * Memperbaiki masalah path 'public/' dan URL eksternal
      */
     public function getCoverUrlAttribute()
     {
-        if ($this->cover_image) {
-            return asset('storage/' . $this->cover_image);
+        // 1. Jika tidak ada gambar, kembalikan placeholder atau null
+        if (empty($this->cover_image)) {
+            return null; // Nanti di Blade akan di-handle oleh '?? placeholder'
         }
-        
-        // Return null atau path gambar default jika tidak ada cover
-        return null; 
+
+        // 2. Jika gambar adalah URL eksternal (misal dari Seeder / Faker)
+        if (filter_var($this->cover_image, FILTER_VALIDATE_URL)) {
+            return $this->cover_image;
+        }
+
+        // 3. Bersihkan path jika tidak sengaja tersimpan dengan prefix 'public/'
+        // Contoh: 'public/covers/foto.jpg' -> 'covers/foto.jpg'
+        $cleanPath = str_replace('public/', '', $this->cover_image);
+
+        // 4. Kembalikan URL asset storage yang benar
+        return asset('storage/' . $cleanPath);
     }
 }
