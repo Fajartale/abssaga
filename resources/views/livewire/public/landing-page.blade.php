@@ -1,4 +1,5 @@
 <div class="min-h-screen bg-white font-mono text-black">
+    {{-- Custom Styles --}}
     <style>
         .text-stroke-black { -webkit-text-stroke: 2px black; }
         .text-stroke-sm { -webkit-text-stroke: 1px black; }
@@ -9,10 +10,12 @@
         ::-webkit-scrollbar-thumb:hover { background: #333; }
     </style>
 
+    {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
                 
+                {{-- Logo & Navigasi Kiri --}}
                 <div class="flex flex-col lg:flex-row items-center gap-8 w-full lg:w-auto">
                     <a href="{{ route('home') }}" class="group flex items-center gap-3 select-none hover:scale-105 transition-transform">
                         <div class="w-12 h-10 bg-white border-2 border-black relative shadow-[4px_4px_0px_0px_#facc15]">
@@ -37,6 +40,7 @@
                     </nav>
                 </div>
 
+                {{-- Search Bar Kanan --}}
                 <div class="w-full lg:w-auto">
                     <div class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
                         <input wire:model.live.debounce.300ms="search" type="text" placeholder="CARI BUKU..." class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0">
@@ -49,10 +53,13 @@
         </div>
     </div>
 
+    {{-- MAIN CONTENT GRID --}}
     <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8 mt-8">
         
+        {{-- KOLOM KIRI (3/4) --}}
         <div class="lg:col-span-3 space-y-10">
             
+            {{-- SLIDER SECTION (EDITOR'S CHOICE) --}}
             <div class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_#1c0213] relative group">
                 <div class="absolute -top-4 -left-2 bg-yellow-400 text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
                     EDITOR'S CHOICE 🔥
@@ -60,6 +67,7 @@
                 
                 <div class="relative h-[400px] bg-black border-2 border-black overflow-hidden">
                     @if($featuredBooks->count() > 0)
+                        {{-- Logika Alpine JS Slider --}}
                         <div x-data="{ activeSlide: 0, slides: {{ $featuredBooks->count() }} }" class="h-full w-full relative">
                             
                             @foreach($featuredBooks as $index => $book)
@@ -86,6 +94,7 @@
                                 </div>
                             @endforeach
 
+                            {{-- Tombol Navigasi Slider --}}
                             @if($featuredBooks->count() > 1)
                                 <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">◀</button>
                                 <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">▶</button>
@@ -93,6 +102,7 @@
 
                         </div>
                     @else
+                        {{-- Placeholder Jika Kosong --}}
                         <div class="h-full w-full flex flex-col items-center justify-center text-white">
                             <span class="text-6xl mb-4">📚</span>
                             <h3 class="text-2xl font-bold uppercase">BELUM ADA BUKU FEATURED</h3>
@@ -102,6 +112,7 @@
                 </div>
             </div>
 
+            {{-- NEW RELEASES GRID --}}
             <div>
                 <div class="flex items-center gap-4 mb-6 border-b-4 border-black pb-2">
                     <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
@@ -113,6 +124,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @forelse($recentBooks as $book)
                         <div class="group border-4 border-black bg-white hover:bg-yellow-50 transition-all hover:shadow-[8px_8px_0px_0px_#1c0213] hover:-translate-y-1 flex flex-col h-full">
+                            {{-- Cover Buku --}}
                             <div class="h-48 bg-gray-200 border-b-4 border-black relative overflow-hidden">
                                 @if($book->cover_url)
                                     <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -126,9 +138,10 @@
                                 </div>
                             </div>
                             
+                            {{-- Info Buku --}}
                             <div class="p-5 flex flex-col flex-grow">
                                 <h4 class="text-xl font-black uppercase mb-1 leading-tight group-hover:text-[#1c0213]">
-                                    {{Str::limit($book->title, 40)}}
+                                    {{ Str::limit($book->title, 40) }}
                                 </h4>
                                 <p class="text-xs font-bold text-yellow-600 mb-3">
                                     {{ $book->user->name ?? 'Unknown Author' }}
@@ -148,21 +161,24 @@
                     @endforelse
                 </div>
                 
+                {{-- Pagination Links --}}
                 <div class="mt-8">
                      {{ $recentBooks->links() }}
                 </div>
             </div>
         </div>
 
+        {{-- KOLOM KANAN (SIDEBAR 1/4) --}}
         <div class="lg:col-span-1">
             <div class="sticky top-24 space-y-8">
                 
+                {{-- TOP RANKING WIDGET --}}
                 <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#facc15]">
                     <div class="bg-black text-white p-3 border-b-4 border-black">
                         <h3 class="text-xl font-black text-center uppercase tracking-wider">👑 Top Ranking</h3>
                     </div>
                     <ul class="divide-y-2 divide-black">
-                        @foreach($rankedBooks as $index => $rank)
+                        @forelse($rankedBooks as $index => $rank)
                             <li class="p-4 hover:bg-yellow-50 transition-colors cursor-pointer group flex gap-3 items-center">
                                 <div class="w-8 h-8 flex items-center justify-center font-black text-lg border-2 border-black bg-white group-hover:bg-black group-hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000]">
                                     {{ $index + 1 }}
@@ -176,10 +192,13 @@
                                     </span>
                                 </div>
                             </li>
-                        @endforeach
+                        @empty
+                            <li class="p-4 text-center font-bold text-gray-500 text-sm">Belum ada data ranking.</li>
+                        @endforelse
                     </ul>
                 </div>
 
+                {{-- POPULAR TAGS WIDGET --}}
                 <div class="border-4 border-black bg-white p-4">
                     <h4 class="font-black text-sm uppercase mb-4 border-b-2 border-black pb-2 inline-block">
                         Popular Tags
