@@ -25,11 +25,11 @@
 
                     {{-- Menu Navigasi --}}
                     <nav class="flex gap-4">
-                        <a href="#" class="px-6 py-2 bg-white text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
+                        <a href="{{ route('series') }}" class="px-6 py-2 bg-white text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Series
                         </a>
                         {{-- Tombol Ranking: BG #e97124, Teks Hitam --}}
-                        <a href="#" class="px-6 py-2 bg-[#e97124] text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
+                        <a href="{{ route('ranking') }}" class="px-6 py-2 bg-[#e97124] text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Ranking 🏆
                         </a>
                     </nav>
@@ -101,7 +101,7 @@
                                 </div>
                             @endforeach
 
-                            {{-- Slider Nav Hover: BG #e97124, Teks Hitam (default button text is black) --}}
+                            {{-- Slider Nav Hover: BG #e97124 --}}
                             @if($featuredBooks->count() > 1)
                                 <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#e97124] transition-colors z-20">◀</button>
                                 <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#e97124] transition-colors z-20">▶</button>
