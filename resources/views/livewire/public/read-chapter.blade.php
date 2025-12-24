@@ -14,7 +14,7 @@
             line-height: 1.8;
             font-size: 1.125rem; /* 18px */
         }
-        /* Memberikan jarak antar paragraf jika konten menggunakan tag <p> atau <div> */
+        /* Memberikan jarak antar paragraf */
         .prose-content p, .prose-content div { 
             margin-bottom: 1.5em; 
         }
@@ -53,7 +53,8 @@
                         placeholder="CARI JUDUL LAIN..." 
                         class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                     >
-                    <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors border-l-2 border-black font-bold">
+                    {{-- Tombol Search Hover: BG #e97124 --}}
+                    <button type="submit" class="bg-black text-white px-4 hover:bg-[#e97124] hover:text-black transition-colors border-l-2 border-black font-bold">
                         CARI
                     </button>
                 </div>
@@ -74,7 +75,8 @@
             </div>
 
             <div class="w-full md:w-auto">
-                <select onchange="location = this.value;" class="w-full md:w-64 bg-yellow-400 border-2 border-black font-bold px-4 py-2 text-sm focus:ring-0 cursor-pointer hover:bg-yellow-500 transition-colors uppercase">
+                {{-- Dropdown Select: BG #e97124 --}}
+                <select onchange="location = this.value;" class="w-full md:w-64 bg-[#e97124] border-2 border-black font-bold px-4 py-2 text-sm focus:ring-0 cursor-pointer hover:brightness-90 transition-all uppercase text-black">
                     @foreach($chapter->book->chapters as $c)
                         <option value="{{ route('chapter.read', $c->id) }}" {{ $c->id == $chapter->id ? 'selected' : '' }}>
                             Chapter {{ $loop->iteration }}: {{ Str::limit($c->title, 20) }}
@@ -100,7 +102,7 @@
             </header>
 
             {{-- CONTENT TEXT --}}
-            {{-- PERBAIKAN UTAMA: Menggunakan {!! !!} agar HTML dirender --}}
+            {{-- Menggunakan {!! !!} agar HTML dirender dengan benar --}}
             <div class="prose-content text-justify text-gray-900 protected-content">
                 {!! $chapter->content !!}
             </div>
@@ -121,8 +123,9 @@
             @endphp
 
             @if($prevChapter)
-                <a href="{{ route('chapter.read', $prevChapter->id) }}" class="flex flex-col items-center justify-center bg-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] hover:bg-yellow-400 hover:-translate-y-1 transition-all group">
-                    <span class="text-xs font-bold text-gray-500 uppercase mb-1">Previous</span>
+                {{-- Tombol Previous Hover: BG #e97124 --}}
+                <a href="{{ route('chapter.read', $prevChapter->id) }}" class="flex flex-col items-center justify-center bg-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] hover:bg-[#e97124] hover:text-black hover:-translate-y-1 transition-all group">
+                    <span class="text-xs font-bold text-gray-500 group-hover:text-black uppercase mb-1">Previous</span>
                     <span class="text-lg font-black group-hover:underline">PREV CHAPTER</span>
                 </a>
             @else
@@ -132,7 +135,8 @@
             @endif
 
             @if($nextChapter)
-                <a href="{{ route('chapter.read', $nextChapter->id) }}" class="flex flex-col items-center justify-center bg-black text-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#facc15] hover:bg-yellow-400 hover:text-black hover:-translate-y-1 transition-all group">
+                {{-- Tombol Next: Shadow #e97124, Hover BG #e97124 --}}
+                <a href="{{ route('chapter.read', $nextChapter->id) }}" class="flex flex-col items-center justify-center bg-black text-white border-2 border-black p-4 shadow-[4px_4px_0px_0px_#e97124] hover:bg-[#e97124] hover:text-black hover:-translate-y-1 transition-all group">
                     <span class="text-xs font-bold text-gray-400 group-hover:text-black uppercase mb-1">Next</span>
                     <span class="text-lg font-black group-hover:underline">NEXT CHAPTER</span>
                 </a>

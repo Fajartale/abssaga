@@ -7,7 +7,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #333; }
     </style>
 
-    {{-- HEADER SECTION (Konsisten dengan Search Page) --}}
+    {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
             
@@ -26,7 +26,8 @@
                         placeholder="CARI JUDUL LAIN..." 
                         class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                     >
-                    <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors border-l-2 border-black font-bold">
+                    {{-- Tombol Search Hover: BG #e97124 --}}
+                    <button type="submit" class="bg-black text-white px-4 hover:bg-[#e97124] hover:text-black transition-colors border-l-2 border-black font-bold">
                         CARI
                     </button>
                 </div>
@@ -62,15 +63,16 @@
                             @endif
                         </div>
 
-                        {{-- Status Badge (Overlay) --}}
-                        <div class="absolute -top-4 -right-4 bg-yellow-400 text-black border-2 border-black px-4 py-1 font-black shadow-[4px_4px_0px_0px_#000] transform rotate-3">
+                        {{-- Status Badge (Overlay): BG #e97124 --}}
+                        <div class="absolute -top-4 -right-4 bg-[#e97124] text-black border-2 border-black px-4 py-1 font-black shadow-[4px_4px_0px_0px_#000] transform rotate-3">
                             {{ $book->is_published ? 'PUBLISHED' : 'DRAFT' }}
                         </div>
                     </div>
 
                     {{-- Stats Box --}}
                     <div class="mt-6 grid grid-cols-2 gap-4">
-                        <div class="bg-black text-white p-3 text-center border-2 border-black shadow-[4px_4px_0px_0px_#facc15]">
+                        {{-- Shadow Stats: #e97124 --}}
+                        <div class="bg-black text-white p-3 text-center border-2 border-black shadow-[4px_4px_0px_0px_#e97124]">
                             <span class="block text-xs text-gray-400 uppercase">Chapters</span>
                             <span class="text-2xl font-black">{{ $book->chapters->count() }}</span>
                         </div>
@@ -107,7 +109,8 @@
                 </div>
 
                 {{-- SYNOPSIS --}}
-                <div class="bg-yellow-50 border-l-8 border-black p-6 relative">
+                {{-- Background diubah ke Oranye Transparan (bg-[#e97124]/10) --}}
+                <div class="bg-[#e97124]/10 border-l-8 border-black p-6 relative">
                     <h3 class="font-black text-lg uppercase mb-2">Synopsis</h3>
                     <p class="text-gray-800 leading-relaxed whitespace-pre-line">
                         {{ $book->synopsis }}
@@ -120,7 +123,8 @@
                 {{-- TOMBOL BACA TERBARU --}}
                 @if($book->chapters->count() > 0)
                     <div class="flex gap-4">
-                        <a href="{{ route('chapter.read', $book->chapters->first()->id) }}" class="flex-1 bg-black text-white text-center py-4 font-black text-xl uppercase border-2 border-black hover:bg-yellow-400 hover:text-black hover:shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 transition-all">
+                        {{-- Hover Button: BG #e97124 --}}
+                        <a href="{{ route('chapter.read', $book->chapters->first()->id) }}" class="flex-1 bg-black text-white text-center py-4 font-black text-xl uppercase border-2 border-black hover:bg-[#e97124] hover:text-black hover:shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 transition-all">
                             MULAI BACA BAB 1
                         </a>
                     </div>
@@ -134,7 +138,8 @@
                 <div class="mt-12">
                     <div class="flex items-center justify-between border-b-4 border-black mb-6 pb-2">
                         <h3 class="text-2xl font-black uppercase flex items-center gap-2">
-                            <span class="bg-yellow-400 w-6 h-6 border-2 border-black block"></span>
+                            {{-- Kotak Icon: BG #e97124 --}}
+                            <span class="bg-[#e97124] w-6 h-6 border-2 border-black block"></span>
                             DAFTAR CHAPTER
                         </h3>
                         <span class="text-sm font-bold">{{ $book->chapters->count() }} Total</span>
@@ -142,9 +147,11 @@
 
                     <div class="flex flex-col gap-3">
                         @forelse($book->chapters as $chapter)
-                            <a href="{{ route('chapter.read', $chapter->id) }}" class="group flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#ccc] hover:shadow-[4px_4px_0px_0px_#facc15] hover:-translate-x-1">
+                            {{-- Chapter Item Shadow Hover: #e97124 --}}
+                            <a href="{{ route('chapter.read', $chapter->id) }}" class="group flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#ccc] hover:shadow-[4px_4px_0px_0px_#e97124] hover:-translate-x-1">
                                 <div class="flex items-center gap-4">
-                                    <span class="font-black text-lg text-gray-400 group-hover:text-yellow-400">
+                                    {{-- Nomor Chapter Hover: Text #e97124 --}}
+                                    <span class="font-black text-lg text-gray-400 group-hover:text-[#e97124]">
                                         #{{ $loop->iteration }}
                                     </span>
                                     <div>
@@ -155,7 +162,8 @@
                                     </div>
                                 </div>
                                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="font-bold text-yellow-400">BACA ➔</span>
+                                    {{-- Teks Baca: Text #e97124 --}}
+                                    <span class="font-bold text-[#e97124]">BACA ➔</span>
                                 </div>
                             </a>
                         @empty
