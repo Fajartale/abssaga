@@ -1,13 +1,4 @@
 <div class="min-h-screen bg-white font-mono text-black">
-    {{-- STYLE DIPINDAHKAN KE DALAM ROOT ELEMENT --}}
-    <style>
-        /* Custom Scrollbar agar sesuai tema */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
-        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
-        ::-webkit-scrollbar-thumb:hover { background: #333; }
-    </style>
-
     {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -27,7 +18,8 @@
                         placeholder="CARI JUDUL LAIN..." 
                         class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                     >
-                    <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors border-l-2 border-black font-bold">
+                    {{-- Tombol Search Hover: BG #e97124, Teks Hitam --}}
+                    <button type="submit" class="bg-black text-white px-4 hover:bg-[#e97124] hover:text-black transition-colors border-l-2 border-black font-bold">
                         CARI
                     </button>
                 </div>
@@ -44,15 +36,15 @@
                 <h2 class="text-4xl font-black uppercase">HASIL PENCARIAN</h2>
                 @if(request('q'))
                     <p class="text-gray-600 font-bold mt-1 text-lg">
-                        Menampilkan hasil untuk: "<span class="text-purple-700 bg-purple-100 px-1">{{ request('q') }}</span>"
+                        Menampilkan hasil untuk: "<span class="text-[#e97124] bg-[#e97124]/10 px-1">{{ request('q') }}</span>"
                     </p>
                 @else
                     <p class="text-gray-600 font-bold mt-1 text-lg">Menampilkan semua buku terbaru</p>
                 @endif
             </div>
             
-            {{-- Badge Jumlah --}}
-            <div class="bg-yellow-400 text-black px-4 py-2 font-black border-2 border-black text-sm shadow-[4px_4px_0px_0px_#000] transform -rotate-2">
+            {{-- Badge Jumlah: BG #e97124 --}}
+            <div class="bg-[#e97124] text-black px-4 py-2 font-black border-2 border-black text-sm shadow-[4px_4px_0px_0px_#000] transform -rotate-2">
                 {{ $books->total() }} DITEMUKAN
             </div>
         </div>
@@ -75,7 +67,8 @@
 
                         {{-- Overlay Hover --}}
                         <div class="absolute inset-0 bg-black/80 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <p class="text-[10px] text-yellow-400 uppercase font-bold mb-1">
+                            {{-- Author Name: Text #e97124 --}}
+                            <p class="text-[10px] text-[#e97124] uppercase font-bold mb-1">
                                 {{ $book->user->name ?? 'Anonim' }}
                             </p>
                             <p class="text-white text-xs line-clamp-3 leading-tight">
@@ -86,7 +79,8 @@
 
                     {{-- Info Judul --}}
                     <div class="p-3 bg-white flex-grow flex items-center justify-center text-center">
-                        <h4 class="text-xs font-black uppercase leading-tight line-clamp-2 group-hover:text-purple-700 transition-colors">
+                        {{-- Judul Hover: Text #e97124 --}}
+                        <h4 class="text-xs font-black uppercase leading-tight line-clamp-2 group-hover:text-[#e97124] transition-colors">
                             {{ $book->title }}
                         </h4>
                     </div>
@@ -97,7 +91,8 @@
                     <span class="text-6xl block mb-4">🤷‍♂️</span>
                     <h3 class="text-2xl font-black text-gray-400 uppercase">Tidak ditemukan.</h3>
                     <p class="text-gray-500 mt-2 font-bold">Coba kata kunci lain yang lebih umum.</p>
-                    <a href="{{ route('home') }}" class="inline-block mt-6 px-6 py-2 bg-black text-white font-bold border-2 border-black hover:bg-yellow-400 hover:text-black transition-colors">
+                    {{-- Tombol Kembali Hover: BG #e97124 --}}
+                    <a href="{{ route('home') }}" class="inline-block mt-6 px-6 py-2 bg-black text-white font-bold border-2 border-black hover:bg-[#e97124] hover:text-black transition-colors">
                         KEMBALI KE BERANDA
                     </a>
                 </div>
@@ -109,4 +104,13 @@
             {{ $books->links() }}
         </div>
     </div>
+
+    {{-- STYLE TAMBAHAN --}}
+    <style>
+        /* Custom Scrollbar agar sesuai tema */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
+        ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
+    </style>
 </div>
