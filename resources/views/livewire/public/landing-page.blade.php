@@ -13,25 +13,15 @@
 
     {{-- HEADER SECTION --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="max-w-7xl mx-auto px-6 py-3"> {{-- Padding disesuaikan agar logo pas --}}
             <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
                 
                 {{-- LOGO & NAVIGASI KIRI --}}
                 <div class="flex flex-col lg:flex-row items-center gap-8 w-full lg:w-auto">
-                    {{-- Logo Teks --}}
+                    {{-- Logo Gambar Baru --}}
                     <a href="{{ route('home') }}" class="group flex items-center gap-3 select-none hover:scale-105 transition-transform">
-                        {{-- Ikon Kotak Logo --}}
-                        <div class="w-12 h-10 bg-white border-2 border-black relative shadow-[4px_4px_0px_0px_#f97316]"> {{-- Shadow diubah ke oranye --}}
-                            <div class="absolute inset-0 border-r-2 border-black w-1/2 bg-gray-100"></div>
-                            <div class="absolute top-2 left-1 w-8 h-1 bg-black"></div>
-                            <div class="absolute top-4 left-1 w-8 h-1 bg-black"></div>
-                        </div>
-                        <div class="leading-none">
-                            <h1 class="text-4xl font-black text-white tracking-tighter">
-                                {{-- Teks SAGA diubah menjadi orange-500 --}}
-                                ABC<span class="text-orange-500 text-stroke-sm transition-colors group-hover:text-orange-400">SAGA</span>
-                            </h1>
-                        </div>
+                        {{-- Pastikan file gambar ada di public/images/abcsaga-logo.png --}}
+                        <img src="{{ asset('images/abcsaga-logo.png') }}" alt="ABCSAGA Logo" class="h-14 w-auto object-contain">
                     </a>
 
                     {{-- Menu Navigasi --}}
@@ -39,14 +29,13 @@
                         <a href="#" class="px-6 py-2 bg-white text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Series
                         </a>
-                        {{-- Tombol Ranking diubah backgroundnya menjadi orange-500 --}}
-                        <a href="#" class="px-6 py-2 bg-orange-500 text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
+                        <a href="#" class="px-6 py-2 bg-yellow-400 text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Ranking 🏆
                         </a>
                     </nav>
                 </div>
 
-                {{-- SEARCH BAR KANAN --}}
+                {{-- SEARCH BAR KANAN (Form HTML Murni) --}}
                 <div class="w-full lg:w-auto">
                     <form action="{{ route('search') }}" method="GET" class="relative flex border-2 border-black bg-white w-full lg:w-[300px]">
                         <input 
@@ -56,8 +45,7 @@
                             class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                             required
                         >
-                        {{-- Tombol Cari hover background diubah ke orange-500 --}}
-                        <button type="submit" class="bg-black text-white px-4 hover:bg-orange-500 hover:text-black transition-colors">
+                        <button type="submit" class="bg-black text-white px-4 hover:bg-yellow-400 hover:text-black transition-colors">
                             🔍
                         </button>
                     </form>
@@ -74,13 +62,13 @@
             
             {{-- SLIDER SECTION (EDITOR'S CHOICE) --}}
             <div class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_#1c0213] relative group">
-                {{-- Badge Editor's Choice background diubah ke orange-500 --}}
-                <div class="absolute -top-4 -left-2 bg-orange-500 text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
+                <div class="absolute -top-4 -left-2 bg-yellow-400 text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
                     EDITOR'S CHOICE 🔥
                 </div>
                 
                 <div class="relative h-[400px] bg-black border-2 border-black overflow-hidden">
                     @if($featuredBooks->count() > 0)
+                        {{-- Alpine JS Slider Logic --}}
                         <div x-data="{ activeSlide: 0, slides: {{ $featuredBooks->count() }} }" class="h-full w-full relative">
                             
                             @foreach($featuredBooks as $index => $book)
@@ -94,29 +82,27 @@
                                     <h2 class="text-4xl lg:text-5xl font-black text-white mb-2 leading-none drop-shadow-[2px_2px_0px_#000]">
                                         {{ $book->title }}
                                     </h2>
-                                    {{-- Teks "Ditulis oleh" diubah ke orange-500 --}}
-                                    <p class="text-orange-500 font-bold mb-4 uppercase tracking-widest text-xs">
+                                    <p class="text-yellow-400 font-bold mb-4 uppercase tracking-widest text-xs">
                                         Ditulis oleh: {{ $book->user->name ?? 'Anonim' }}
                                     </p>
-                                    {{-- Border kiri sinopsis diubah ke orange-500 --}}
-                                    <p class="text-gray-300 text-sm line-clamp-2 max-w-2xl mb-6 border-l-4 border-orange-500 pl-4">
+                                    <p class="text-gray-300 text-sm line-clamp-2 max-w-2xl mb-6 border-l-4 border-yellow-400 pl-4">
                                         {{ $book->synopsis }}
                                     </p>
                                     
-                                    {{-- Tombol Baca Sekarang hover background diubah ke orange-500 --}}
-                                    <a href="{{ route('book.detail', $book->id) }}" class="w-fit bg-white text-black border-2 border-black px-8 py-3 font-bold hover:bg-orange-500 hover:shadow-[4px_4px_0px_0px_#000] transition-all uppercase tracking-widest text-xs">
+                                    <a href="{{ route('book.detail', $book->id) }}" class="w-fit bg-white text-black border-2 border-black px-8 py-3 font-bold hover:bg-yellow-400 hover:shadow-[4px_4px_0px_0px_#000] transition-all uppercase tracking-widest text-xs">
                                         BACA SEKARANG
                                     </a>
                                 </div>
                             @endforeach
 
-                            {{-- Slider Navigation Arrows hover background diubah ke orange-500 --}}
+                            {{-- Slider Navigation Arrows --}}
                             @if($featuredBooks->count() > 1)
-                                <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-orange-500 transition-colors z-20">◀</button>
-                                <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-orange-500 transition-colors z-20">▶</button>
+                                <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">◀</button>
+                                <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-yellow-400 transition-colors z-20">▶</button>
                             @endif
                         </div>
                     @else
+                        {{-- Placeholder Empty State --}}
                         <div class="h-full w-full flex flex-col items-center justify-center text-white">
                             <span class="text-6xl mb-4">📚</span>
                             <h3 class="text-2xl font-bold uppercase">BELUM ADA BUKU FEATURED</h3>
@@ -125,20 +111,21 @@
                 </div>
             </div>
 
-            {{-- NEW RELEASES GRID --}}
+            {{-- NEW RELEASES GRID (Tampilan Rak Buku Kecil) --}}
             <div>
                 <div class="flex items-center gap-4 mb-6 border-b-4 border-black pb-2">
                     <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
                         NEW RELEASES
                     </h3>
-                    {{-- Garis separator diubah backgroundnya ke orange-500 --}}
-                    <div class="h-1 bg-orange-500 flex-grow"></div>
+                    <div class="h-1 bg-yellow-400 flex-grow"></div>
                 </div>
 
+                {{-- Grid Rapat (2 Kolom HP, 5 Kolom Desktop) --}}
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     @forelse($recentBooks as $book)
                         <a href="{{ route('book.detail', $book->id) }}" class="group relative block bg-white border-2 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1c0213] transition-all h-full flex flex-col">
                             
+                            {{-- Cover Image (Aspect Ratio Poster) --}}
                             <div class="aspect-[2/3] w-full overflow-hidden relative bg-gray-200">
                                 @if($book->cover_url)
                                     <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -154,18 +141,18 @@
                                     <h4 class="text-white text-xs font-bold uppercase leading-tight line-clamp-3">
                                         {{ $book->title }}
                                     </h4>
-                                    {{-- Nama penulis di overlay diubah teksnya ke orange-500 --}}
-                                    <p class="text-[10px] text-orange-500 mt-1 truncate">
+                                    <p class="text-[10px] text-yellow-400 mt-1 truncate">
                                         {{ $book->user->name ?? 'Anonim' }}
                                     </p>
                                 </div>
 
-                                {{-- Badge New background diubah ke orange-500 --}}
-                                <div class="absolute top-0 left-0 bg-orange-500 text-black text-[10px] font-black px-1 border-b border-r border-black">
+                                {{-- Badge New --}}
+                                <div class="absolute top-0 left-0 bg-yellow-400 text-black text-[10px] font-black px-1 border-b border-r border-black">
                                     NEW
                                 </div>
                             </div>
                             
+                            {{-- Judul (Selalu Tampil di Bawah) --}}
                             <div class="p-2 border-t-2 border-black bg-white flex-grow flex items-center justify-center">
                                 <h4 class="text-[11px] font-bold uppercase leading-tight line-clamp-2 group-hover:text-purple-700 transition-colors w-full text-center">
                                     {{ $book->title }}
@@ -179,6 +166,7 @@
                     @endforelse
                 </div>
                 
+                {{-- Pagination Links --}}
                 <div class="mt-8">
                      {{ $recentBooks->links() }}
                 </div>
@@ -190,15 +178,13 @@
             <div class="sticky top-24 space-y-8">
                 
                 {{-- TOP RANKING WIDGET --}}
-                {{-- Shadow hex code diubah dari #facc15 (kuning) ke #f97316 (oranye) --}}
-                <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#f97316]">
+                <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#facc15]">
                     <div class="bg-black text-white p-3 border-b-4 border-black">
                         <h3 class="text-xl font-black text-center uppercase tracking-wider">👑 Top Ranking</h3>
                     </div>
                     <ul class="divide-y-2 divide-black">
                         @forelse($rankedBooks as $index => $rank)
-                            {{-- Hover background diubah menjadi orange-50 (oranye sangat muda) --}}
-                            <li class="p-4 hover:bg-orange-50 transition-colors cursor-pointer group flex gap-3 items-center">
+                            <li class="p-4 hover:bg-yellow-50 transition-colors cursor-pointer group flex gap-3 items-center">
                                 <div class="w-8 h-8 flex items-center justify-center font-black text-lg border-2 border-black bg-white group-hover:bg-black group-hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000]">
                                     {{ $index + 1 }}
                                 </div>
