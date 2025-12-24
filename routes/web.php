@@ -10,8 +10,8 @@ use App\Livewire\Public\ReadChapter;
 use App\Livewire\Admin\ManageBooks;
 use App\Livewire\Admin\ChapterEditor;
 use App\Livewire\Public\SearchPage;
-// use App\Livewire\Public\SeriesPage;
-// use App\Livewire\Public\RankingPage;
+use App\Livewire\Public\SeriesPage;
+use App\Livewire\Public\RankingPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,8 +36,8 @@ Route::get('/read/{id}', ReadChapter::class)->name('chapter.read');
 // ROUTE BARU UNTUK PENCARIAN
 Route::get('/search', SearchPage::class)->name('search');
 
-// Route::get('/series', SeriesPage::class)->name('series');
-// Route::get('/ranking', RankingPage::class)->name('ranking');
+Route::get('/series', SeriesPage::class)->name('series');
+Route::get('/ranking', RankingPage::class)->name('ranking');
 
 
 // ====================================================
