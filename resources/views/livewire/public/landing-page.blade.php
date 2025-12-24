@@ -28,8 +28,8 @@
                         <a href="#" class="px-6 py-2 bg-white text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Series
                         </a>
-                        {{-- Tombol Ranking: BG #131c02, Teks Putih --}}
-                        <a href="#" class="px-6 py-2 bg-[#131c02] text-white font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
+                        {{-- Tombol Ranking: BG #e97124, Teks Hitam --}}
+                        <a href="#" class="px-6 py-2 bg-[#e97124] text-black font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm uppercase">
                             Ranking 🏆
                         </a>
                     </nav>
@@ -45,8 +45,8 @@
                             class="w-full bg-transparent border-none text-sm font-bold px-4 py-2 uppercase placeholder-gray-500 focus:ring-0"
                             required
                         >
-                        {{-- Tombol Cari Hover: BG #131c02, Teks Putih --}}
-                        <button type="submit" class="bg-black text-white px-4 hover:bg-[#131c02] hover:text-white transition-colors">
+                        {{-- Tombol Cari Hover: BG #e97124, Teks Hitam --}}
+                        <button type="submit" class="bg-black text-white px-4 hover:bg-[#e97124] hover:text-black transition-colors">
                             🔍
                         </button>
                     </form>
@@ -63,8 +63,8 @@
             
             {{-- SLIDER SECTION (EDITOR'S CHOICE) --}}
             <div class="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_#1c0213] relative group">
-                {{-- Badge Editor: BG #131c02, Teks Putih --}}
-                <div class="absolute -top-4 -left-2 bg-[#131c02] text-white px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
+                {{-- Badge Editor: BG #e97124, Teks Hitam --}}
+                <div class="absolute -top-4 -left-2 bg-[#e97124] text-black px-4 py-1 font-black border-2 border-black z-20 shadow-sm transform -rotate-2">
                     EDITOR'S CHOICE 🔥
                 </div>
                 
@@ -84,27 +84,27 @@
                                         {{ $book->title }}
                                     </h2>
                                     
-                                    {{-- Penulis: Teks #131c02 dengan Background Putih (Agar terbaca) --}}
-                                    <p class="text-[#131c02] bg-white px-2 inline-block font-bold mb-4 uppercase tracking-widest text-xs">
+                                    {{-- Penulis: Teks #e97124 dengan Background Putih (Agar terbaca) --}}
+                                    <p class="text-[#e97124] bg-white px-2 inline-block font-bold mb-4 uppercase tracking-widest text-xs">
                                         Ditulis oleh: {{ $book->user->name ?? 'Anonim' }}
                                     </p>
                                     
-                                    {{-- Border Sinopsis: #131c02 --}}
-                                    <p class="text-gray-300 text-sm line-clamp-2 max-w-2xl mb-6 border-l-4 border-[#131c02] pl-4">
+                                    {{-- Border Sinopsis: #e97124 --}}
+                                    <p class="text-gray-300 text-sm line-clamp-2 max-w-2xl mb-6 border-l-4 border-[#e97124] pl-4">
                                         {{ $book->synopsis }}
                                     </p>
                                     
-                                    {{-- Tombol Baca Hover: BG #131c02, Teks Putih --}}
-                                    <a href="{{ route('book.detail', $book->id) }}" class="w-fit bg-white text-black border-2 border-black px-8 py-3 font-bold hover:bg-[#131c02] hover:text-white hover:shadow-[4px_4px_0px_0px_#000] transition-all uppercase tracking-widest text-xs">
+                                    {{-- Tombol Baca Hover: BG #e97124, Teks Hitam --}}
+                                    <a href="{{ route('book.detail', $book->id) }}" class="w-fit bg-white text-black border-2 border-black px-8 py-3 font-bold hover:bg-[#e97124] hover:text-black hover:shadow-[4px_4px_0px_0px_#000] transition-all uppercase tracking-widest text-xs">
                                         BACA SEKARANG
                                     </a>
                                 </div>
                             @endforeach
 
-                            {{-- Slider Nav Hover: BG #131c02, Teks Putih --}}
+                            {{-- Slider Nav Hover: BG #e97124, Teks Hitam (default button text is black) --}}
                             @if($featuredBooks->count() > 1)
-                                <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#131c02] hover:text-white transition-colors z-20">◀</button>
-                                <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#131c02] hover:text-white transition-colors z-20">▶</button>
+                                <button @click="activeSlide = activeSlide === 0 ? slides - 1 : activeSlide - 1" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#e97124] transition-colors z-20">◀</button>
+                                <button @click="activeSlide = activeSlide === slides - 1 ? 0 : activeSlide + 1" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white border-2 border-black p-3 hover:bg-[#e97124] transition-colors z-20">▶</button>
                             @endif
                         </div>
                     @else
@@ -122,8 +122,8 @@
                     <h3 class="text-3xl font-black bg-black text-white px-4 py-1 transform -skew-x-6">
                         NEW RELEASES
                     </h3>
-                    {{-- Garis Pemisah: #131c02 --}}
-                    <div class="h-1 bg-[#131c02] flex-grow"></div>
+                    {{-- Garis Pemisah: #e97124 --}}
+                    <div class="h-1 bg-[#e97124] flex-grow"></div>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -145,14 +145,14 @@
                                     <h4 class="text-white text-xs font-bold uppercase leading-tight line-clamp-3">
                                         {{ $book->title }}
                                     </h4>
-                                    {{-- Penulis Overlay: Teks #131c02, BG Putih --}}
-                                    <p class="text-[10px] text-[#131c02] bg-white px-1 mt-1 truncate inline-block">
+                                    {{-- Penulis Overlay: Teks #e97124, BG Putih --}}
+                                    <p class="text-[10px] text-[#e97124] bg-white px-1 mt-1 truncate inline-block">
                                         {{ $book->user->name ?? 'Anonim' }}
                                     </p>
                                 </div>
 
-                                {{-- Badge New: BG #131c02, Teks Putih --}}
-                                <div class="absolute top-0 left-0 bg-[#131c02] text-white text-[10px] font-black px-1 border-b border-r border-black">
+                                {{-- Badge New: BG #e97124, Teks Hitam --}}
+                                <div class="absolute top-0 left-0 bg-[#e97124] text-black text-[10px] font-black px-1 border-b border-r border-black">
                                     NEW
                                 </div>
                             </div>
@@ -181,15 +181,15 @@
             <div class="sticky top-24 space-y-8">
                 
                 {{-- TOP RANKING WIDGET --}}
-                {{-- Shadow: #131c02 --}}
-                <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#131c02]">
+                {{-- Shadow: #e97124 --}}
+                <div class="border-4 border-black bg-white shadow-[8px_8px_0px_0px_#e97124]">
                     <div class="bg-black text-white p-3 border-b-4 border-black">
                         <h3 class="text-xl font-black text-center uppercase tracking-wider">👑 Top Ranking</h3>
                     </div>
                     <ul class="divide-y-2 divide-black">
                         @forelse($rankedBooks as $index => $rank)
-                            {{-- Ranking Item Hover: BG #131c02, Teks Putih --}}
-                            <li class="p-4 hover:bg-[#131c02] hover:text-white transition-colors cursor-pointer group flex gap-3 items-center">
+                            {{-- Ranking Item Hover: BG #e97124, Teks Hitam --}}
+                            <li class="p-4 hover:bg-[#e97124] hover:text-black transition-colors cursor-pointer group flex gap-3 items-center">
                                 <div class="w-8 h-8 flex items-center justify-center font-black text-lg border-2 border-black bg-white text-black group-hover:bg-white group-hover:text-black transition-colors shadow-[2px_2px_0px_0px_#000]">
                                     {{ $index + 1 }}
                                 </div>
@@ -215,8 +215,8 @@
                     </h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['Action', 'Romance', 'Fantasy', 'Horror', 'System'] as $tag)
-                            {{-- Tags Hover: BG #131c02, Teks Putih --}}
-                            <button class="text-xs font-bold border-2 border-black px-3 py-1 hover:bg-[#131c02] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                            {{-- Tags Hover: BG #e97124, Teks Hitam --}}
+                            <button class="text-xs font-bold border-2 border-black px-3 py-1 hover:bg-[#e97124] hover:text-black transition-colors shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
                                 #{{ $tag }}
                             </button>
                         @endforeach
