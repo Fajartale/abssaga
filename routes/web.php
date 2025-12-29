@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController; 
 
 // --- IMPORT LIVEWIRE COMPONENTS ---
 
@@ -15,7 +15,7 @@ use App\Livewire\Public\ReadChapter;
 
 // 2. Auth/Author Components
 use App\Livewire\Dashboard;
-use App\Livewire\ManageBook; // Pastikan baris ini ada
+use App\Livewire\ManageBook; // <--- SAYA TAMBAHKAN INI
 
 /*
 |--------------------------------------------------------------------------
@@ -40,14 +40,14 @@ Route::get('/chapter/{id}', ReadChapter::class)->name('chapter.read');
 // ==========================================
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Dashboard Penulis (Livewire Component -> Tanpa Kurung Siku)
+    // Dashboard Penulis
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // Manage Book (Livewire Component -> Tanpa Kurung Siku)
-    // PERBAIKAN: Hapus tanda [] jika sebelumnya ada.
+    // --- SAYA TAMBAHKAN ROUTE INI (MANAGE BOOK) ---
+    // Perhatikan: TIDAK ADA tanda kurung siku [] di sekitar ManageBook::class
     Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
 
-    // Profile Routes (Controller Biasa -> WAJIB Pakai Kurung Siku)
+    // --- PROFILE ROUTES (Script Lama Anda) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

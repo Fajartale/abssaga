@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use Livewire\WithFileUploads; // Wajib untuk upload file
 use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -15,9 +15,9 @@ class ManageBook extends Component
     public $bookId;
     public $title;
     public $synopsis;
-    public $cover; // Untuk file upload baru
-    public $old_cover; // Untuk menyimpan url cover lama (saat edit)
-    public $is_published = false;
+    public $cover;       // Menampung file baru yang diupload
+    public $old_cover;   // Menampung URL cover lama (untuk preview saat edit)
+    public $is_published = 0; // Default Draft (0)
 
     // Rules Validasi
     protected function rules()
@@ -25,21 +25,25 @@ class ManageBook extends Component
         return [
             'title' => 'required|min:3|max:255',
             'synopsis' => 'required|min:10',
-            'cover' => 'nullable|image|max:2048', // Max 2MB
+            'cover' => 'nullable|image|max:2048', // Max 2MB, format gambar
             'is_published' => 'boolean'
         ];
     }
 
+    // Mount dijalankan saat halaman pertama kali dimuat
+    // Jika ada ID ($id), berarti mode EDIT
     public function mount($id = null)
     {
         if ($id) {
-            // EDIT MODE
+            // Cari buku milik user yang sedang login (Security Check)
             $book = Book::where('user_id', Auth::id())->findOrFail($id);
+
+            // Isi form dengan data database
             $this->bookId = $book->id;
             $this->title = $book->title;
             $this->synopsis = $book->synopsis;
             $this->is_published = $book->is_published;
-            $this->old_cover = $book->cover_url; // Pastikan di model Book ada accessor/kolom cover_url
+            $this->old_cover = $book->cover_url; // Pastikan model Book punya akses ke url cover
         }
     }
 
@@ -47,48 +51,50 @@ class ManageBook extends Component
     {
         $this->validate();
 
-        // 1. Handle File Upload
+        // 1. Proses Upload Cover (Jika ada file baru)
         $coverPath = null;
         if ($this->cover) {
-            // Simpan ke storage/app/public/covers
+            // Simpan di folder: storage/app/public/covers
             $coverPath = $this->cover->store('covers', 'public');
         }
 
-        // 2. Simpan atau Update Database
+        // 2. Simpan ke Database
         if ($this->bookId) {
-            // Update Existing Book
+            // --- UPDATE (Edit Buku Lama) ---
             $book = Book::where('user_id', Auth::id())->findOrFail($this->bookId);
+            
             $updateData = [
                 'title' => $this->title,
                 'synopsis' => $this->synopsis,
                 'is_published' => $this->is_published,
             ];
 
-            // Hanya update cover jika user upload baru
+            // Hanya update path cover jika user mengupload gambar baru
             if ($coverPath) {
-                // Opsional: Hapus cover lama dari storage jika perlu
-                $updateData['cover_path'] = $coverPath; // Sesuaikan dengan nama kolom di DB Anda
+                $updateData['cover_path'] = $coverPath;
+                // Opsional: Hapus file lama jika perlu menggunakan Storage::delete()
             }
 
             $book->update($updateData);
-            session()->flash('message', 'Novel berhasil diperbarui!');
+            
         } else {
-            // Create New Book
+            // --- CREATE (Buat Buku Baru) ---
             Book::create([
                 'user_id' => Auth::id(),
                 'title' => $this->title,
                 'synopsis' => $this->synopsis,
                 'is_published' => $this->is_published,
-                'cover_path' => $coverPath, // Sesuaikan dengan nama kolom di DB Anda
+                'cover_path' => $coverPath,
             ]);
-            session()->flash('message', 'Novel baru berhasil diterbitkan!');
         }
 
+        // Redirect kembali ke Dashboard setelah simpan
         return redirect()->route('dashboard');
     }
 
     public function render()
     {
+        // Menggunakan layout 'blank' agar tidak bentrok dengan navigasi bawaan
         return view('livewire.manage-book')->layout('layouts.blank');
     }
 }
