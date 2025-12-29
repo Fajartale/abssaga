@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController; 
+use App\Http\Controllers\ProfileController;
 
-// --- IMPORT COMPONENT LIVEWIRE ---
+// --- IMPORT LIVEWIRE COMPONENTS ---
 
-// 1. Public Components
+// 1. Public Components (Halaman Depan)
 use App\Livewire\Public\LandingPage;
 use App\Livewire\Public\SearchPage;
 use App\Livewire\Public\SeriesPage;
@@ -13,9 +13,9 @@ use App\Livewire\Public\RankingPage;
 use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
 
-// 2. Auth/Admin Components
+// 2. Auth/Author Components (Halaman Admin/Penulis)
 use App\Livewire\Dashboard;
-use App\Livewire\ManageBook; 
+use App\Livewire\ManageBook;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,12 +55,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     // Manage Book (Create & Edit)
-    // Parameter {id?} opsional: 
-    // - Jika kosong = Mode Buat Baru
-    // - Jika ada ID = Mode Edit
+    // PENTING: Jangan gunakan tanda kurung siku [] di sini untuk Livewire Full Page Component
     Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
 
-    // Profile Routes (Standard Laravel Breeze)
+    // Profile Routes (Standard Laravel Breeze/Jetstream)
+    // Ini memperbaiki error "Route [profile.edit] not defined"
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -70,4 +69,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ==========================================
 // 3. AUTH SYSTEM ROUTES
 // ==========================================
+// Memuat route login, register, logout bawaan Laravel
 require __DIR__.'/auth.php';
