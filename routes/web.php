@@ -1,21 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController; // <--- PENTING: Tambahkan Import Ini
 
-// --- IMPORT LIVEWIRE COMPONENTS ---
-
-// 1. Public Components
+// --- IMPORT COMPONENT LIVEWIRE ---
 use App\Livewire\Public\LandingPage;
 use App\Livewire\Public\SearchPage;
 use App\Livewire\Public\SeriesPage;
 use App\Livewire\Public\RankingPage;
 use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
-
-// 2. Auth/Author Components
 use App\Livewire\Dashboard;
-use App\Livewire\ManageBook;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,12 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard Penulis
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // Manage Book (Create & Edit)
-    // PERBAIKAN DI SINI: Hapus tanda kurung siku []
-    // Sebelumnya mungkin tertulis [ManageBook::class], ubah menjadi ManageBook::class saja.
-    Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
-
-    // Profile Routes (Standard Laravel Breeze)
+    // --- PERBAIKAN DI SINI ---
+    // Mengembalikan route profile standar agar tidak error di navigasi
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
