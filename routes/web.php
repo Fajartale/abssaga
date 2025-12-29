@@ -1,17 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController; 
 
-// Livewire Components
+// --- IMPORT LIVEWIRE COMPONENTS ---
+
+// 1. Public Components
 use App\Livewire\Public\LandingPage;
 use App\Livewire\Public\SearchPage;
 use App\Livewire\Public\SeriesPage;
 use App\Livewire\Public\RankingPage;
 use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
+
+// 2. Auth/Author Components
 use App\Livewire\Dashboard;
-use App\Livewire\ManageBook;
+use App\Livewire\ManageBook; // <--- SAYA TAMBAHKAN INI
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +23,10 @@ use App\Livewire\ManageBook;
 |--------------------------------------------------------------------------
 */
 
-// --- PUBLIC ROUTES ---
+// ==========================================
+// 1. PUBLIC ROUTES (Dapat diakses Tamu)
+// ==========================================
+
 Route::get('/', LandingPage::class)->name('home');
 Route::get('/search', SearchPage::class)->name('search');
 Route::get('/series', SeriesPage::class)->name('series');
@@ -27,19 +34,27 @@ Route::get('/ranking', RankingPage::class)->name('ranking');
 Route::get('/book/{id}', BookDetail::class)->name('book.detail');
 Route::get('/chapter/{id}', ReadChapter::class)->name('chapter.read');
 
-// --- AUTHENTICATED ROUTES ---
+
+// ==========================================
+// 2. AUTHENTICATED ROUTES (Harus Login)
+// ==========================================
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Dashboard (Livewire: Tanpa kurung siku)
+    // Dashboard Penulis
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // Manage Book (Livewire: Tanpa kurung siku)
-    Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
+    // --- SAYA TAMBAHKAN ROUTE INI (MANAGE BOOK) ---
+    // Perhatikan: TIDAK ADA tanda kurung siku [] di sekitar ManageBook::class
+    // Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
 
-    // Profile (Controller Biasa: WAJIB pakai kurung siku)
+    // --- PROFILE ROUTES (Script Lama Anda) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+// ==========================================
+// 3. AUTH SYSTEM ROUTES
+// ==========================================
 require __DIR__.'/auth.php';
