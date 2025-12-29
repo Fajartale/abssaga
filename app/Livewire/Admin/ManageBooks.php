@@ -1,99 +1,94 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithFileUploads; // Wajib untuk upload file
+use Livewire\WithFileUploads;
 use App\Models\Book;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ManageBooks extends Component
+class ManageBook extends Component
 {
     use WithFileUploads;
 
+    public $bookId;
     public $title;
     public $synopsis;
-    public $cover; // Property untuk file sementara
-    public $books;
+    public $cover; // Untuk file upload baru
+    public $old_cover; // Untuk menyimpan url cover lama (saat edit)
+    public $is_published = false;
 
-    public function mount() {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-        $this->loadBooks();
-    }
-
-    public function loadBooks() {
-        // Ambil buku milik user yang login, urutkan dari yang terbaru
-        $this->books = Book::where('user_id', Auth::id())->latest()->get();
-    }
-
-    public function save() {
-        // 1. VALIDASI
-        // Perbaikan: Limit dinaikkan ke 5MB (5120KB) atau 10MB (10240KB) sesuai kebutuhan.
-        // Catatan: Pastikan 'upload_max_filesize' & 'post_max_size' di php.ini server > dari nilai ini.
-        $this->validate([
+    // Rules Validasi
+    protected function rules()
+    {
+        return [
             'title' => 'required|min:3|max:255',
             'synopsis' => 'required|min:10',
-            'cover' => 'nullable|image|max:10240', // Maksimal 10MB
-        ], [
-            'title.required' => 'Judul buku wajib diisi!',
-            'synopsis.required' => 'Sinopsis minimal 10 karakter.',
-            'cover.image' => 'File harus berupa gambar (JPG, PNG, JPEG).',
-            'cover.max' => 'Ukuran gambar terlalu besar! Maksimal 10MB.',
-        ]);
+            'cover' => 'nullable|image|max:2048', // Max 2MB
+            'is_published' => 'boolean'
+        ];
+    }
 
-        // 2. PROSES UPLOAD GAMBAR
+    public function mount($id = null)
+    {
+        if ($id) {
+            // EDIT MODE
+            $book = Book::where('user_id', Auth::id())->findOrFail($id);
+            $this->bookId = $book->id;
+            $this->title = $book->title;
+            $this->synopsis = $book->synopsis;
+            $this->is_published = $book->is_published;
+            $this->old_cover = $book->cover_url; // Pastikan di model Book ada accessor/kolom cover_url
+        }
+    }
+
+    public function save()
+    {
+        $this->validate();
+
+        // 1. Handle File Upload
         $coverPath = null;
-        
-        // Cek apakah ada file cover yang diupload
         if ($this->cover) {
-            // Simpan ke folder 'covers' di disk 'public'
-            // Hasilnya misal: covers/namafileacak.jpg
+            // Simpan ke storage/app/public/covers
             $coverPath = $this->cover->store('covers', 'public');
         }
 
-        // 3. GENERATE SLUG
-        $slug = Str::slug($this->title) . '-' . Str::random(4);
+        // 2. Simpan atau Update Database
+        if ($this->bookId) {
+            // Update Existing Book
+            $book = Book::where('user_id', Auth::id())->findOrFail($this->bookId);
+            $updateData = [
+                'title' => $this->title,
+                'synopsis' => $this->synopsis,
+                'is_published' => $this->is_published,
+            ];
 
-        // 4. SIMPAN KE DATABASE
-        Book::create([
-            'user_id'     => Auth::id(),
-            'title'       => $this->title,
-            'slug'        => $slug,
-            'synopsis'    => $this->synopsis,
-            'cover_image' => $coverPath, // Simpan path gambar atau null
-        ]);
-
-        // 5. BERSIHKAN FORM
-        $this->reset(['title', 'synopsis', 'cover']);
-        
-        // 6. UPDATE TAMPILAN
-        $this->loadBooks();
-        
-        // 7. FLASH MESSAGE
-        session()->flash('message', 'Buku berhasil diterbitkan!');
-    }
-
-    public function delete($id) {
-        $book = Book::find($id);
-
-        if ($book && $book->user_id === Auth::id()) {
-            // Hapus gambar cover dari storage jika ada
-            if ($book->cover_image) {
-                Storage::disk('public')->delete($book->cover_image);
+            // Hanya update cover jika user upload baru
+            if ($coverPath) {
+                // Opsional: Hapus cover lama dari storage jika perlu
+                $updateData['cover_path'] = $coverPath; // Sesuaikan dengan nama kolom di DB Anda
             }
-            
-            $book->delete();
-            $this->loadBooks();
-            session()->flash('message', 'Buku berhasil dihapus.');
+
+            $book->update($updateData);
+            session()->flash('message', 'Novel berhasil diperbarui!');
+        } else {
+            // Create New Book
+            Book::create([
+                'user_id' => Auth::id(),
+                'title' => $this->title,
+                'synopsis' => $this->synopsis,
+                'is_published' => $this->is_published,
+                'cover_path' => $coverPath, // Sesuaikan dengan nama kolom di DB Anda
+            ]);
+            session()->flash('message', 'Novel baru berhasil diterbitkan!');
         }
+
+        return redirect()->route('dashboard');
     }
 
-    public function render() {
-        return view('livewire.admin.manage-books')
-            ->layout('layouts.app');
+    public function render()
+    {
+        return view('livewire.manage-book')->layout('layouts.blank');
     }
 }
