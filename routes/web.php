@@ -15,7 +15,8 @@ use App\Livewire\Public\ReadChapter;
 
 // 2. Auth/Author Components
 use App\Livewire\Dashboard;
-use App\Livewire\ManageBook; // <--- SAYA TAMBAHKAN INI
+// [PERBAIKAN] Mengarah ke folder Admin dan nama class ManageBooks
+use App\Livewire\Admin\ManageBooks; 
 
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +44,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard Penulis
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // --- SAYA TAMBAHKAN ROUTE INI (MANAGE BOOK) ---
-    // Perhatikan: TIDAK ADA tanda kurung siku [] di sekitar ManageBook::class
-     Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
+    // --- MANAGE BOOK ROUTES ---
+    // [PERBAIKAN] Menggunakan class ManageBooks yang sudah di-import dengan benar
+    Route::get('/book/manage/{id?}', ManageBooks::class)->name('book.manage');
 
-    // --- PROFILE ROUTES (Script Lama Anda) ---
+    // --- PROFILE ROUTES ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
