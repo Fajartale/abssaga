@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- SAYA TAMBAHKAN ROUTE INI (MANAGE BOOK) ---
     // Perhatikan: TIDAK ADA tanda kurung siku [] di sekitar ManageBook::class
-    // Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
+     Route::get('/book/manage/{id?}', ManageBook::class)->name('book.manage');
 
     // --- PROFILE ROUTES (Script Lama Anda) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
