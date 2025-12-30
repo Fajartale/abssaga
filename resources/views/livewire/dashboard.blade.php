@@ -8,7 +8,6 @@
     </style>
 
     {{-- HEADER KHUSUS DASHBOARD --}}
-    {{-- Menggantikan navigasi bawaan Laravel --}}
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
             
@@ -16,7 +15,7 @@
             <a href="{{ route('home') }}" class="group flex items-center gap-3 select-none hover:scale-105 transition-transform">
                 <img src="{{ asset('images/abcsaga-logo.png') }}" alt="ABCSAGA Logo" class="h-12 w-auto object-contain">
                 
-                {{-- Badge Author Panel: BG #e97124 --}}
+                {{-- Badge Author Panel --}}
                 <span class="text-black font-black text-sm md:text-lg tracking-tighter bg-[#e97124] px-3 py-1 border-2 border-white transform -skew-x-12 hidden md:block shadow-[2px_2px_0px_0px_rgba(255,255,255,0.5)]">
                     AUTHOR PANEL
                 </span>
@@ -30,7 +29,6 @@
                 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    {{-- Tombol Logout: Hover BG #e97124 --}}
                     <button type="submit" class="bg-white text-black font-bold px-4 py-2 border-2 border-black hover:bg-[#e97124] hover:text-black transition-colors shadow-[4px_4px_0px_0px_#e97124] hover:shadow-[4px_4px_0px_0px_#fff]">
                         LOGOUT
                     </button>
@@ -42,6 +40,14 @@
     {{-- MAIN CONTENT --}}
     <div class="max-w-7xl mx-auto p-6 mt-8">
         
+        {{-- Flash Message (Jika ada aksi hapus/simpan) --}}
+        @if (session()->has('message'))
+            <div class="mb-6 bg-green-100 border-2 border-black text-black p-4 font-bold shadow-[4px_4px_0px_0px_#000] flex items-center justify-between">
+                <span>{{ session('message') }}</span>
+                <span class="text-xl">✅</span>
+            </div>
+        @endif
+        
         {{-- WELCOME SECTION --}}
         <div class="mb-10 border-4 border-black p-6 bg-gray-100 shadow-[8px_8px_0px_0px_#000] relative overflow-hidden">
             <div class="relative z-10">
@@ -52,7 +58,6 @@
                     Selamat datang kembali! Siap merangkai kata hari ini?
                 </p>
             </div>
-            {{-- Dekorasi background --}}
             <div class="absolute -right-10 -bottom-10 text-9xl opacity-5 select-none pointer-events-none">
                 ✍️
             </div>
@@ -62,7 +67,6 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             
             {{-- Stat 1: Total Books --}}
-            {{-- Shadow: #e97124 --}}
             <div class="bg-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#e97124] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -74,7 +78,6 @@
             </div>
 
             {{-- Stat 2: Total Chapters --}}
-            {{-- Shadow: Hitam (Variasi) --}}
             <div class="bg-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -86,7 +89,6 @@
             </div>
 
             {{-- Stat 3: Total Views --}}
-            {{-- BG Hitam, Shadow #e97124 --}}
             <div class="bg-black text-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#e97124] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -106,8 +108,9 @@
                     NOVEL SAYA
                 </h2>
                 
-                {{-- Tombol Buat Baru: BG #e97124 --}}
-                <a href="#" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
+                {{-- TOMBOL BUAT NOVEL BARU --}}
+                {{-- Update: Link mengarah ke route 'book.manage' --}}
+                <a href="{{ route('book.manage') }}" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
                     <span>+</span> Buat Novel Baru
                 </a>
             </div>
@@ -179,10 +182,19 @@
                                             <a href="{{ route('book.detail', $book->id) }}" class="flex items-center justify-center w-10 h-10 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-[2px_2px_0px_0px_#ccc] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Lihat Halaman">
                                                 👁️
                                             </a>
-                                            <button class="flex items-center justify-center w-10 h-10 border-2 border-black bg-yellow-300 hover:bg-yellow-400 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Edit Buku">
+                                            
+                                            {{-- TOMBOL EDIT --}}
+                                            {{-- Update: Menggunakan tag <a> dan route dengan parameter ID --}}
+                                            <a href="{{ route('book.manage', $book->id) }}" class="flex items-center justify-center w-10 h-10 border-2 border-black bg-yellow-300 hover:bg-yellow-400 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Edit Buku">
                                                 ✏️
-                                            </button>
-                                            <button class="flex items-center justify-center w-10 h-10 border-2 border-black bg-red-500 text-white hover:bg-red-600 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Hapus">
+                                            </a>
+
+                                            {{-- TOMBOL HAPUS --}}
+                                            {{-- Update: Menambahkan wire:click dan wire:confirm --}}
+                                            <button 
+                                                wire:click="deleteBook({{ $book->id }})"
+                                                wire:confirm="Yakin ingin menghapus novel ini? Tindakan ini tidak bisa dibatalkan."
+                                                class="flex items-center justify-center w-10 h-10 border-2 border-black bg-red-500 text-white hover:bg-red-600 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Hapus">
                                                 🗑️
                                             </button>
                                         </div>
