@@ -15,30 +15,34 @@
             
             <form wire:submit.prevent="save" class="space-y-6">
                 
+                {{-- Input Judul --}}
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700">Judul Novel</label>
                     <div class="mt-1">
                         <input wire:model="title" id="title" type="text" required 
                             class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     </div>
-                    @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
+                {{-- Input Sinopsis --}}
                 <div>
                     <label for="synopsis" class="block text-sm font-medium text-gray-700">Sinopsis</label>
                     <div class="mt-1">
                         <textarea wire:model="synopsis" id="synopsis" rows="4" required
                             class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
                     </div>
-                    @error('synopsis') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @error('synopsis') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
+                {{-- Input Cover --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Cover Novel</label>
                     
                     <div class="mt-2 flex items-center justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                         <div class="space-y-1 text-center">
                             
+                            {{-- Preview Area --}}
                             <div class="mb-4">
                                 @if ($cover)
                                     <p class="text-xs text-gray-500 mb-1">Preview Baru:</p>
@@ -53,6 +57,7 @@
                                 @endif
                             </div>
 
+                            {{-- Tombol Upload --}}
                             <div class="flex text-sm text-gray-600 justify-center">
                                 <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload file cover</span>
@@ -62,13 +67,15 @@
                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
                         </div>
                     </div>
-                    @error('cover') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @error('cover') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     
+                    {{-- Loading Indicator --}}
                     <div wire:loading wire:target="cover" class="text-sm text-blue-500 mt-1">
                         Sedang mengupload gambar...
                     </div>
                 </div>
 
+                {{-- Checkbox Publish --}}
                 <div class="flex items-center">
                     <input wire:model="is_published" id="is_published" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                     <label for="is_published" class="ml-2 block text-sm text-gray-900">
@@ -76,6 +83,7 @@
                     </label>
                 </div>
 
+                {{-- Tombol Submit --}}
                 <div>
                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50" wire:loading.attr="disabled">
                         <span wire:loading.remove>{{ $bookId ? 'Update Novel' : 'Buat Novel' }}</span>
