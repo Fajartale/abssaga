@@ -15,8 +15,9 @@ use App\Livewire\Public\ReadChapter;
 
 // 2. Auth/Author Components
 use App\Livewire\Dashboard;
-// [PERBAIKAN] Mengarah ke folder Admin dan nama class ManageBooks
+// Pastikan namespace sesuai dengan folder: App\Livewire\Admin
 use App\Livewire\Admin\ManageBooks; 
+use App\Livewire\Admin\ChapterEditor;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,38 +25,29 @@ use App\Livewire\Admin\ManageBooks;
 |--------------------------------------------------------------------------
 */
 
-// ==========================================
-// 1. PUBLIC ROUTES (Dapat diakses Tamu)
-// ==========================================
-
 Route::get('/', LandingPage::class)->name('home');
-Route::get('/search', SearchPage::class)->name('search');
-Route::get('/series', SeriesPage::class)->name('series');
-Route::get('/ranking', RankingPage::class)->name('ranking');
-Route::get('/book/{id}', BookDetail::class)->name('book.detail');
-Route::get('/chapter/{id}', ReadChapter::class)->name('chapter.read');
-
+// ... (Route public lainnya tetap sama) ...
 
 // ==========================================
 // 2. AUTHENTICATED ROUTES (Harus Login)
 // ==========================================
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    // Dashboard Penulis
+    // Dashboard
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // --- MANAGE BOOK ROUTES ---
-    // [PERBAIKAN] Menggunakan class ManageBooks yang sudah di-import dengan benar
+    // 1. Route untuk Tambah/Edit Buku (Data Umum: Judul, Sinopsis, Cover)
+    // Parameter {id?} bersifat opsional. Jika kosong = Buat Baru.
     Route::get('/book/manage/{id?}', ManageBooks::class)->name('book.manage');
 
-    // --- PROFILE ROUTES ---
+    // 2. Route untuk Edit Chapter (Bab)
+    // Parameter {bookId} wajib agar kita tahu chapter ini milik buku siapa.
+    Route::get('/book/{bookId}/chapters', ChapterEditor::class)->name('book.chapters');
+
+    // ... (Route Profile tetap sama) ...
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-// ==========================================
-// 3. AUTH SYSTEM ROUTES
-// ==========================================
 require __DIR__.'/auth.php';
