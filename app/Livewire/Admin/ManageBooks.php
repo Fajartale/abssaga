@@ -1,39 +1,39 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Admin; // [PERBAIKAN 1] Namespace harus mengarah ke folder Admin
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use Livewire\WithFileUploads; // Wajib untuk fitur upload gambar
 use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Str; // [PERBAIKAN 2] Import Str untuk pembuatan Slug
 
-class ManageBooks extends Component
+class ManageBooks extends Component // [PERBAIKAN 3] Nama Class HARUS sama dengan Nama File (ManageBooks)
 {
     use WithFileUploads;
 
     public $bookId;
     public $title;
     public $synopsis;
-    public $cover;       // File gambar baru (dari form upload)
-    public $old_cover;   // URL gambar lama (dari database)
-    public $is_published = 0;
+    public $cover;       // Menampung file baru dari input form
+    public $old_cover;   // Menampung URL cover lama dari database
+    public $is_published = 0; // Default: Draft
 
-    // Aturan Validasi
+    // Rules Validasi
     protected function rules()
     {
         return [
             'title' => 'required|min:3|max:255',
             'synopsis' => 'required|min:10',
-            'cover' => 'nullable|image|max:2048', // Maksimal 2MB
+            'cover' => 'nullable|image|max:2048', // Max 2MB, harus gambar
             'is_published' => 'boolean'
         ];
     }
 
     /**
-     * Mount dijalankan saat komponen dimuat.
-     * Menerima parameter $id dari Route (jika ada).
+     * Method mount dijalankan sekali saat komponen dimuat.
+     * Menerima parameter $id dari URL (jika ada).
      */
     public function mount($id = null)
     {
@@ -47,11 +47,11 @@ class ManageBooks extends Component
             $this->synopsis = $book->synopsis;
             $this->is_published = (bool) $book->is_published;
             
-            // Ambil URL cover dari accessor di Model Book
+            // Mengambil URL cover lama (pastikan ada accessor di Model Book atau gunakan asset)
             $this->old_cover = $book->cover_url; 
         } else {
-            // --- MODE CREATE ---
-            // Reset semua field agar form kosong
+            // --- MODE CREATE (Buat Baru) ---
+            // Reset semua field
             $this->bookId = null;
             $this->title = '';
             $this->synopsis = '';
@@ -64,38 +64,40 @@ class ManageBooks extends Component
     {
         $this->validate();
 
-        // 1. Siapkan Data Dasar
+        // 1. Siapkan data dasar
         $data = [
             'title' => $this->title,
             'synopsis' => $this->synopsis,
             'is_published' => $this->is_published ? 1 : 0,
         ];
 
-        // 2. Handle Upload Cover
+        // 2. Proses Upload Cover (Jika ada file baru)
         if ($this->cover) {
-            // Simpan gambar ke storage/app/public/covers
+            // Simpan ke storage/app/public/covers
             $path = $this->cover->store('covers', 'public');
-            // Simpan path ke database (nama kolom: cover_image)
-            $data['cover_image'] = $path;
+            $data['cover_image'] = $path; // Sesuaikan dengan nama kolom di Database
         }
 
         // 3. Simpan ke Database
         if ($this->bookId) {
-            // === UPDATE BUKU LAMA ===
+            // === UPDATE ===
             $book = Book::where('user_id', Auth::id())->findOrFail($this->bookId);
-
-            // Hapus file cover lama jika user mengupload cover baru (Opsional)
+            
+            // Hapus file lama jika ada cover baru (Opsional)
             if ($this->cover && $book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
+            
+            // Jangan update slug saat edit agar link tidak rusak (Opsional)
+            // $data['slug'] = Str::slug($this->title); 
 
             $book->update($data);
             session()->flash('message', 'Novel berhasil diperbarui!');
-
+            
         } else {
-            // === BUAT BUKU BARU ===
+            // === CREATE ===
             $data['user_id'] = Auth::id();
-            // Buat Slug Unik (contoh: judul-buku-a1b2)
+            // Buat slug unik saat membuat buku baru
             $data['slug'] = Str::slug($this->title) . '-' . Str::random(4);
 
             Book::create($data);
@@ -108,7 +110,7 @@ class ManageBooks extends Component
 
     public function render()
     {
-        // Pastikan view mengarah ke folder yang benar
+        // [PERBAIKAN 4] Arahkan ke view yang benar di folder admin
         return view('livewire.admin.manage-books')->layout('layouts.blank');
     }
 }
