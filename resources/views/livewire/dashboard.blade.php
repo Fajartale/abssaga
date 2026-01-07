@@ -108,10 +108,11 @@
                     NOVEL SAYA
                 </h2>
                 
-                {{-- [PERBAIKAN 1] Tombol Buat Baru -> route('book.manage') --}}
-                <a href="{{ route('book.manage') }}" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
+               {{-- Tombol Buat Novel Baru --}}
+            {{-- Kita pasang parameter '0' agar URL menjadi /book/manage/0 --}}
+                    <a href="{{ route('book.manage', 0) }}" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
                     <span>+</span> Buat Novel Baru
-                </a>
+                    </a>
             </div>
 
             {{-- Table List --}}
