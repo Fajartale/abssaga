@@ -11,11 +11,10 @@ use App\Livewire\Public\RankingPage;
 use App\Livewire\Public\BookDetail;
 use App\Livewire\Public\ReadChapter;
 
-// --- 2. IMPORT LIVEWIRE ADMIN COMPONENTS ---
+// --- 2. IMPORT LIVEWIRE ADMIN/AUTH COMPONENTS ---
 use App\Livewire\Dashboard;
-// Pastikan nama class JAMAK (ManageBooks) dan namespace ADMIN
-use App\Livewire\Admin\ManageBooks;  
-use App\Livewire\Admin\ChapterEditor;
+use App\Livewire\Admin\ManageBooks;   // [PERBAIKAN] Gunakan namespace Admin & nama jamak
+use App\Livewire\Admin\ChapterEditor; // [TAMBAHAN] Import ini wajib untuk fitur edit chapter
 
 /*
 |--------------------------------------------------------------------------
@@ -23,29 +22,44 @@ use App\Livewire\Admin\ChapterEditor;
 |--------------------------------------------------------------------------
 */
 
-// Public Routes
+// ==========================================
+// 1. PUBLIC ROUTES (Dapat diakses Siapa Saja)
+// ==========================================
+
 Route::get('/', LandingPage::class)->name('home');
 Route::get('/search', SearchPage::class)->name('search');
 Route::get('/series', SeriesPage::class)->name('series');
 Route::get('/ranking', RankingPage::class)->name('ranking');
+
+// Route Detail & Baca
 Route::get('/book/{id}', BookDetail::class)->name('book.detail');
 Route::get('/chapter/{id}', ReadChapter::class)->name('chapter.read');
 
-// Authenticated Routes
+
+// ==========================================
+// 2. AUTHENTICATED ROUTES (Harus Login)
+// ==========================================
 Route::middleware(['auth', 'verified'])->group(function () {
     
+    // Dashboard Penulis
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
-    // [PENTING] Tambahkan tanda tanya {id?} agar bisa diakses tanpa ID (untuk Buat Baru)
+    // [PERBAIKAN] Route Manage Books (Create/Edit)
+    // Parameter {id?} opsional: Jika kosong = Create, Jika ada = Edit
     Route::get('/book/manage/{id?}', ManageBooks::class)->name('book.manage');
 
-    // Route untuk Chapter
+    // [TAMBAHAN] Route Manage Chapters (Kelola Isi Buku)
+    // Wajib ada agar tombol "Kelola Daftar Chapter" berfungsi
     Route::get('/book/{bookId}/chapters', ChapterEditor::class)->name('book.chapters');
 
-    // Profile
+    // --- PROFILE ROUTES ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+// ==========================================
+// 3. AUTH SYSTEM ROUTES
+// ==========================================
 require __DIR__.'/auth.php';
