@@ -13,7 +13,7 @@ use App\Livewire\Public\ReadChapter;
 
 // --- 2. IMPORT LIVEWIRE ADMIN/AUTH COMPONENTS ---
 use App\Livewire\Dashboard;
-use App\Livewire\Admin\ManageBooks;   // [PERBAIKAN] Gunakan namespace Admin & nama jamak
+use App\Livewire\Admin\ManageBooks;   // [PERBAIKAN] Menggunakan namespace Admin & nama jamak
 use App\Livewire\Admin\ChapterEditor; // [TAMBAHAN] Import ini wajib untuk fitur edit chapter
 
 /*
