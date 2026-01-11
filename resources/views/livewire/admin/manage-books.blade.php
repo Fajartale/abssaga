@@ -5,7 +5,7 @@
         <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 {{-- Tombol Kembali --}}
-                <a href="{{ route('dashboard') }}" class="bg-white text-black px-3 py-1 font-bold border-2 border-black hover:bg-[#e97124] transition-colors shadow-[2px_2px_0px_0px_#e97124]">
+                <a href="{{ route('dashboard') }}" class="bg-white text-black px-3 py-1 font-bold border-2 border-black hover:bg-[#e97124] transition-colors shadow-[2px_2px_0px_0px_#e97124] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]">
                     ⬅ KEMBALI
                 </a>
                 <h1 class="text-white font-black text-xl uppercase tracking-wider hidden md:block">
@@ -23,14 +23,23 @@
         
         <div class="bg-white border-4 border-black p-6 md:p-10 shadow-[8px_8px_0px_0px_#e97124] relative">
             
-            {{-- Judul Form --}}
-            <div class="mb-8 border-b-4 border-black pb-4">
-                <h2 class="text-3xl font-black uppercase">
-                    {{ $bookId ? 'PERBARUI KARYA' : 'MULAI TULISAN BARU' }}
-                </h2>
-                <p class="text-gray-500 font-bold mt-1">
-                    Isi detail buku Anda dengan menarik agar pembaca penasaran.
-                </p>
+            {{-- Header Form --}}
+            <div class="mb-8 border-b-4 border-black pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-black uppercase">
+                        {{ $bookId ? 'PERBARUI KARYA' : 'MULAI TULISAN BARU' }}
+                    </h2>
+                    <p class="text-gray-500 font-bold mt-1">
+                        Isi detail buku Anda dengan menarik agar pembaca penasaran.
+                    </p>
+                </div>
+
+                {{-- Tombol Kelola Chapter (Hanya Muncul saat Edit) --}}
+                @if($bookId)
+                    <a href="{{ route('book.chapters', $bookId) }}" class="bg-indigo-100 text-indigo-700 px-4 py-2 border-2 border-black font-black shadow-[4px_4px_0px_0px_#000] hover:bg-indigo-600 hover:text-white hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all flex items-center gap-2">
+                        📝 KELOLA CHAPTER
+                    </a>
+                @endif
             </div>
 
             <form wire:submit.prevent="save" class="space-y-8">
@@ -53,31 +62,35 @@
                     <textarea wire:model="synopsis" rows="6" placeholder="Ceritakan ringkasan cerita yang membuat pembaca tidak bisa tidur..." 
                         class="w-full border-4 border-black p-4 text-lg font-bold bg-gray-50 focus:bg-white focus:ring-0 focus:outline-none focus:shadow-[4px_4px_0px_0px_#e97124] transition-all placeholder-gray-400"></textarea>
                     @error('synopsis') <span class="text-red-600 font-black text-sm mt-1 block bg-red-100 p-1 border border-red-600 w-fit">⚠ {{ $message }}</span> @enderror
-                {{-- 3. PILIH GENRE (Multi Select) --}}
+                </div>
+
+                {{-- 3. INPUT GENRE (MULTI SELECT) --}}
                 <div class="group">
                     <label class="block font-black text-lg uppercase mb-2 bg-black text-white w-fit px-2">
                         PILIH GENRE (MINIMAL 1)
                     </label>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 border-4 border-black p-4 bg-gray-50">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 border-4 border-black p-4 bg-gray-50 max-h-60 overflow-y-auto custom-scrollbar">
                         @foreach($allGenres as $genre)
-                            <label class="cursor-pointer flex items-center gap-2 hover:bg-yellow-200 p-1 transition-colors">
+                            <label class="cursor-pointer flex items-center gap-2 hover:bg-yellow-200 p-2 border-2 border-transparent hover:border-black transition-all select-none">
                                 <input type="checkbox" wire:model="selectedGenres" value="{{ $genre->id }}" 
-                                    class="w-5 h-5 border-2 border-black text-[#e97124] focus:ring-[#e97124]">
+                                    class="w-5 h-5 border-2 border-black text-[#e97124] focus:ring-[#e97124] rounded-none">
                                 <span class="font-bold text-sm uppercase">{{ $genre->name }}</span>
                             </label>
                         @endforeach
                     </div>
+                    @if(count($allGenres) == 0)
+                         <p class="text-sm text-gray-500 italic mt-1">*Belum ada genre. Harap tambahkan di database.</p>
+                    @endif
+
                     @error('selectedGenres') 
                         <span class="text-red-600 font-black text-sm mt-1 block bg-red-100 p-1 border border-red-600 w-fit">
                             ⚠ {{ $message }}
                         </span> 
                     @enderror
                 </div>
-                
-                </div>
 
-                {{-- 3. GRID COVER & STATUS --}}
+                {{-- 4. GRID COVER & STATUS --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     
                     {{-- UPLOAD COVER --}}
@@ -115,7 +128,7 @@
                         @error('cover') <span class="text-red-600 font-black text-sm mt-1 block">⚠ {{ $message }}</span> @enderror
                     </div>
 
-                    {{-- PILIH STATUS (YANG DIPERBAIKI) --}}
+                    {{-- PILIH STATUS PUBLIKASI --}}
                     <div class="flex flex-col justify-start">
                         <label class="block font-black text-lg uppercase mb-2 bg-black text-white w-fit px-2">
                             STATUS PUBLIKASI
@@ -127,7 +140,6 @@
                             <div class="relative">
                                 <input type="radio" id="status_draft" wire:model.live="is_published" value="0" class="peer sr-only">
                                 <label for="status_draft" class="cursor-pointer flex items-center gap-4 p-4 border-4 border-black w-full bg-white hover:bg-gray-100 transition-all peer-checked:bg-gray-200 peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                                    {{-- Custom Checkbox Box --}}
                                     <div class="w-6 h-6 border-2 border-black bg-white flex items-center justify-center peer-checked:bg-black transition-colors">
                                         <div class="w-3 h-3 bg-white opacity-0 peer-checked:opacity-100"></div>
                                     </div>
@@ -142,7 +154,6 @@
                             <div class="relative">
                                 <input type="radio" id="status_publish" wire:model.live="is_published" value="1" class="peer sr-only">
                                 <label for="status_publish" class="cursor-pointer flex items-center gap-4 p-4 border-4 border-black w-full bg-white hover:bg-orange-50 transition-all peer-checked:bg-[#e97124] peer-checked:text-black peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                                    {{-- Custom Checkbox Box --}}
                                     <div class="w-6 h-6 border-2 border-black bg-white flex items-center justify-center peer-checked:bg-black transition-colors">
                                         <div class="w-3 h-3 bg-white opacity-0 peer-checked:opacity-100"></div>
                                     </div>
@@ -157,7 +168,7 @@
                     </div>
                 </div>
 
-                {{-- 4. TOMBOL AKSI --}}
+                {{-- 5. TOMBOL AKSI --}}
                 <div class="pt-6 border-t-4 border-black flex items-center justify-end gap-4">
                     <a href="{{ route('dashboard') }}" class="px-6 py-3 font-bold text-gray-500 hover:text-black uppercase hover:underline">
                         Batal
