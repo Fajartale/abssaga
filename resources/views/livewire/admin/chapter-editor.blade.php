@@ -11,13 +11,13 @@
             ::-webkit-scrollbar-thumb { background: #000; border: 2px solid black; }
             ::-webkit-scrollbar-thumb:hover { background: #333; }
             
-            /* Trix Editor Styling agar sesuai tema */
+            /* Trix Editor Styling */
             trix-editor {
                 border: 4px solid black !important;
                 min-height: 450px;
                 background-color: #fafafa;
                 padding: 1.5rem;
-                font-size: 1.125rem; /* text-lg */
+                font-size: 1.125rem;
                 border-radius: 0 !important;
             }
             trix-editor:focus {
@@ -34,8 +34,7 @@
     <div class="bg-[#1c0213] border-b-4 border-black sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                
-                {{-- [PERBAIKAN] TOMBOL KEMBALI LANGSUNG KE DASHBOARD --}}
+                {{-- Tombol Kembali --}}
                 <a href="{{ route('dashboard') }}" class="bg-white text-black px-3 py-1 font-bold border-2 border-black hover:bg-[#e97124] transition-colors shadow-[2px_2px_0px_0px_#e97124] active:shadow-none active:translate-y-[2px] active:translate-x-[2px] text-sm uppercase">
                     ⬅ Dashboard
                 </a>
@@ -61,9 +60,20 @@
             
             {{-- A. SIDEBAR: DAFTAR CHAPTER --}}
             <div class="lg:col-span-1 bg-gray-100 border-4 border-black p-4 shadow-[6px_6px_0px_0px_#000] sticky top-24 max-h-[80vh] overflow-y-auto flex flex-col">
+                
+                {{-- HEADER SIDEBAR --}}
                 <div class="border-b-4 border-black pb-4 mb-4">
                     <h3 class="font-black text-xl uppercase">DAFTAR ISI</h3>
                     <p class="text-xs font-bold text-gray-500 mt-1">Total: {{ $chapters->count() }} Bab</p>
+                    
+                    {{-- [PINDAH POSISI] Tombol Tambah Baru (Muncul jika sedang Edit) --}}
+                    @if($isEditing)
+                        <div class="mt-3">
+                            <button wire:click="cancel" class="w-full bg-green-400 text-black font-black border-2 border-black py-2 hover:bg-green-500 shadow-[2px_2px_0px_0px_#000] active:translate-y-[2px] active:shadow-none uppercase text-sm transition-all">
+                                + Tulis Bab Baru
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
                 <ul class="space-y-3 flex-grow">
@@ -106,14 +116,6 @@
                     @endforelse
                 </ul>
                 
-                {{-- Tombol Tambah Baru (Muncul jika sedang Edit) --}}
-                @if($isEditing)
-                    <div class="mt-4 pt-4 border-t-4 border-black">
-                        <button wire:click="cancel" class="w-full bg-green-400 text-black font-black border-2 border-black py-2 hover:bg-green-500 shadow-[2px_2px_0px_0px_#000] active:translate-y-[2px] active:shadow-none uppercase text-sm">
-                            + Tulis Bab Baru
-                        </button>
-                    </div>
-                @endif
             </div>
 
             {{-- B. MAIN: FORM EDITOR --}}
