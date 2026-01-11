@@ -53,6 +53,28 @@
                     <textarea wire:model="synopsis" rows="6" placeholder="Ceritakan ringkasan cerita yang membuat pembaca tidak bisa tidur..." 
                         class="w-full border-4 border-black p-4 text-lg font-bold bg-gray-50 focus:bg-white focus:ring-0 focus:outline-none focus:shadow-[4px_4px_0px_0px_#e97124] transition-all placeholder-gray-400"></textarea>
                     @error('synopsis') <span class="text-red-600 font-black text-sm mt-1 block bg-red-100 p-1 border border-red-600 w-fit">⚠ {{ $message }}</span> @enderror
+                {{-- 3. PILIH GENRE (Multi Select) --}}
+                <div class="group">
+                    <label class="block font-black text-lg uppercase mb-2 bg-black text-white w-fit px-2">
+                        PILIH GENRE (MINIMAL 1)
+                    </label>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 border-4 border-black p-4 bg-gray-50">
+                        @foreach($allGenres as $genre)
+                            <label class="cursor-pointer flex items-center gap-2 hover:bg-yellow-200 p-1 transition-colors">
+                                <input type="checkbox" wire:model="selectedGenres" value="{{ $genre->id }}" 
+                                    class="w-5 h-5 border-2 border-black text-[#e97124] focus:ring-[#e97124]">
+                                <span class="font-bold text-sm uppercase">{{ $genre->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('selectedGenres') 
+                        <span class="text-red-600 font-black text-sm mt-1 block bg-red-100 p-1 border border-red-600 w-fit">
+                            ⚠ {{ $message }}
+                        </span> 
+                    @enderror
+                </div>
+                
                 </div>
 
                 {{-- 3. GRID COVER & STATUS --}}

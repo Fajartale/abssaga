@@ -1,62 +1,66 @@
 <?php
 
-namespace App\Livewire\Admin; // [PERBAIKAN 1] Namespace harus mengarah ke folder Admin
+namespace App\Livewire\Admin;
 
 use Livewire\Component;
-use Livewire\WithFileUploads; // Wajib untuk fitur upload gambar
+use Livewire\WithFileUploads;
 use App\Models\Book;
+use App\Models\Genre; // Import Model Genre
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str; // [PERBAIKAN 2] Import Str untuk pembuatan Slug
+use Illuminate\Support\Str;
 
-class ManageBooks extends Component // [PERBAIKAN 3] Nama Class HARUS sama dengan Nama File (ManageBooks)
+class ManageBooks extends Component
 {
     use WithFileUploads;
 
     public $bookId;
     public $title;
     public $synopsis;
-    public $cover;       // Menampung file baru dari input form
-    public $old_cover;   // Menampung URL cover lama dari database
-    public $is_published = 0; // Default: Draft
+    public $cover;
+    public $old_cover;
+    public $is_published = 0;
+    
+    // Properti Baru untuk Genre
+    public $allGenres = []; 
+    public $selectedGenres = []; // Array ID genre yang dipilih
 
-    // Rules Validasi
     protected function rules()
     {
         return [
             'title' => 'required|min:3|max:255',
             'synopsis' => 'required|min:10',
-            'cover' => 'nullable|image|max:2048', // Max 2MB, harus gambar
-            'is_published' => 'boolean'
+            'cover' => 'nullable|image|max:2048',
+            'is_published' => 'boolean',
+            'selectedGenres' => 'required|array|min:1', // Wajib pilih minimal 1 genre
         ];
     }
 
-    /**
-     * Method mount dijalankan sekali saat komponen dimuat.
-     * Menerima parameter $id dari URL (jika ada).
-     */
     public function mount($id = null)
     {
+        // Ambil semua genre untuk ditampilkan di pilihan
+        $this->allGenres = Genre::orderBy('name')->get();
+
         if ($id) {
-            // --- MODE EDIT ---
-            // Cari buku berdasarkan ID dan pastikan milik user yang login
-            $book = Book::where('user_id', Auth::id())->findOrFail($id);
+            // MODE EDIT
+            $book = Book::where('user_id', Auth::id())->with('genres')->findOrFail($id);
 
             $this->bookId = $book->id;
             $this->title = $book->title;
             $this->synopsis = $book->synopsis;
             $this->is_published = (bool) $book->is_published;
+            $this->old_cover = $book->cover_url;
             
-            // Mengambil URL cover lama (pastikan ada accessor di Model Book atau gunakan asset)
-            $this->old_cover = $book->cover_url; 
+            // Isi array selectedGenres dengan ID genre yang sudah tersimpan
+            $this->selectedGenres = $book->genres->pluck('id')->toArray();
         } else {
-            // --- MODE CREATE (Buat Baru) ---
-            // Reset semua field
+            // MODE CREATE
             $this->bookId = null;
             $this->title = '';
             $this->synopsis = '';
             $this->is_published = 0;
             $this->old_cover = null;
+            $this->selectedGenres = [];
         }
     }
 
@@ -64,53 +68,49 @@ class ManageBooks extends Component // [PERBAIKAN 3] Nama Class HARUS sama denga
     {
         $this->validate();
 
-        // 1. Siapkan data dasar
         $data = [
             'title' => $this->title,
             'synopsis' => $this->synopsis,
             'is_published' => $this->is_published ? 1 : 0,
         ];
 
-        // 2. Proses Upload Cover (Jika ada file baru)
         if ($this->cover) {
-            // Simpan ke storage/app/public/covers
             $path = $this->cover->store('covers', 'public');
-            $data['cover_image'] = $path; // Sesuaikan dengan nama kolom di Database
+            $data['cover_image'] = $path;
         }
 
-        // 3. Simpan ke Database
         if ($this->bookId) {
-            // === UPDATE ===
+            // UPDATE
             $book = Book::where('user_id', Auth::id())->findOrFail($this->bookId);
             
-            // Hapus file lama jika ada cover baru (Opsional)
             if ($this->cover && $book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
             
-            // Jangan update slug saat edit agar link tidak rusak (Opsional)
-            // $data['slug'] = Str::slug($this->title); 
-
             $book->update($data);
-            session()->flash('message', 'Novel berhasil diperbarui!');
             
+            // Sync Genre (Update relasi pivot)
+            $book->genres()->sync($this->selectedGenres);
+
+            session()->flash('message', 'Novel berhasil diperbarui!');
         } else {
-            // === CREATE ===
+            // CREATE
             $data['user_id'] = Auth::id();
-            // Buat slug unik saat membuat buku baru
             $data['slug'] = Str::slug($this->title) . '-' . Str::random(4);
 
-            Book::create($data);
-            session()->flash('message', 'Novel baru berhasil dibuat! Silakan tambah chapter.');
+            $book = Book::create($data);
+            
+            // Attach Genre (Simpan relasi pivot)
+            $book->genres()->attach($this->selectedGenres);
+
+            session()->flash('message', 'Novel baru berhasil dibuat!');
         }
 
-        // Redirect kembali ke Dashboard
         return redirect()->route('dashboard');
     }
 
     public function render()
     {
-        // [PERBAIKAN 4] Arahkan ke view yang benar di folder admin
         return view('livewire.admin.manage-books')->layout('layouts.blank');
     }
 }
