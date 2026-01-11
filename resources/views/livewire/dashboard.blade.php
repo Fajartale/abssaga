@@ -65,8 +65,7 @@
 
         {{-- STATS GRID --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            
-            {{-- Stat 1: Total Books --}}
+            {{-- Stat Cards... (Tidak ada perubahan) --}}
             <div class="bg-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#e97124] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -77,7 +76,6 @@
                 </div>
             </div>
 
-            {{-- Stat 2: Total Chapters --}}
             <div class="bg-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -88,7 +86,6 @@
                 </div>
             </div>
 
-            {{-- Stat 3: Total Views --}}
             <div class="bg-black text-white border-2 border-black p-4 shadow-[6px_6px_0px_0px_#e97124] hover:-translate-y-1 transition-transform group">
                 <div class="flex items-center justify-between">
                     <div>
@@ -108,11 +105,10 @@
                     NOVEL SAYA
                 </h2>
                 
-               {{-- Tombol Buat Novel Baru --}}
-            {{-- Kita pasang parameter '0' agar URL menjadi /book/manage/0 --}}
-                    <a href="{{ route('book.manage', 0) }}" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
+                {{-- Tombol Buat Novel Baru (Link ke ID 0 agar masuk mode Create) --}}
+                <a href="{{ route('book.manage', 0) }}" class="bg-[#e97124] text-black px-6 py-2 font-black border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:bg-black hover:text-white hover:shadow-[4px_4px_0px_0px_#e97124] transition-all text-sm uppercase flex items-center gap-2">
                     <span>+</span> Buat Novel Baru
-                    </a>
+                </a>
             </div>
 
             {{-- Table List --}}
@@ -176,20 +172,25 @@
                                         </div>
                                     </td>
 
-                                    {{-- Kolom Aksi --}}
+                                    {{-- Kolom Aksi (UPDATED) --}}
                                     <td class="p-4 align-middle text-right">
                                         <div class="flex justify-end gap-2">
-                                            {{-- Tombol Lihat (Link ke Public) --}}
+                                            {{-- 1. Lihat (Public) --}}
                                             <a href="{{ route('book.detail', $book->id) }}" class="flex items-center justify-center w-10 h-10 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-[2px_2px_0px_0px_#ccc] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Lihat Halaman">
                                                 👁️
                                             </a>
+
+                                            {{-- 2. Kelola Chapter (BARU) --}}
+                                            <a href="{{ route('book.chapters', $book->id) }}" class="flex items-center justify-center w-10 h-10 border-2 border-black bg-indigo-300 hover:bg-indigo-400 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Kelola Chapter">
+                                                📝
+                                            </a>
                                             
-                                            {{-- [PERBAIKAN 2] Tombol Edit -> route('book.manage', id) --}}
+                                            {{-- 3. Edit Detail Buku --}}
                                             <a href="{{ route('book.manage', $book->id) }}" class="flex items-center justify-center w-10 h-10 border-2 border-black bg-yellow-300 hover:bg-yellow-400 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]" title="Edit Buku">
                                                 ✏️
                                             </a>
 
-                                            {{-- [PERBAIKAN 3] Tombol Hapus (Pastikan method deleteBook ada di Dashboard.php) --}}
+                                            {{-- 4. Hapus --}}
                                             <button 
                                                 wire:click="deleteBook({{ $book->id }})" 
                                                 wire:confirm="Yakin ingin menghapus novel ini? Tindakan ini tidak bisa dibatalkan."
