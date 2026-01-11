@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany; // Import ini
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +27,12 @@ class Book extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Tambahkan Relasi ke Genre
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(Genre::class, 'book_genre');
     }
 
     /**
